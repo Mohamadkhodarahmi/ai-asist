@@ -17,6 +17,7 @@ class FileUpload extends Component
     public function mount()
     {
         // Load the business and its files for the authenticated user.
+        \Log::info("FileUpload component mounted!");
         $this->business = Auth::user()->business()->with('knowledgeFiles')->first();
     }
 
@@ -55,6 +56,6 @@ class FileUpload extends Component
 
     public function render()
     {
-        return view('livewire.file-upload')->layout('layouts.app');
+        return view('livewire.file-upload')->extends('layouts.app');
     }
 }

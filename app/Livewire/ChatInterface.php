@@ -45,6 +45,6 @@ class ChatInterface extends Component
 
     public function render()
     {
-        return view('livewire.chat-interface')->layout('layouts.app');
+        return view('livewire.chat-interface')->extends('layouts.app');
     }
 }
