@@ -1,45 +1,75 @@
 <?php
+
 namespace App\Jobs;
 
-// ... other imports
 use App\Models\KnowledgeFile;
-use App\Services\EmbeddingService; // A service you will create
-use Spatie\PdfToText\Pdf;
+use App\Services\EmbeddingService;
+use App\Services\FileParsingService;
+use App\Services\VectorDatabaseService;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class ProcessKnowledgeFile implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(public KnowledgeFile $file) {}
-
-    public function handle(EmbeddingService $embeddingService): void
+    /**
+     * Create a new job instance.
+     *
+     * @param \App\Models\KnowledgeFile $file The file to be processed.
+     */
+    public function __construct(public KnowledgeFile $file)
     {
-        // 1. Update status to 'processing'
+        //
+    }
+
+    /**
+     * Execute the job.
+     * This method orchestrates the entire file processing pipeline.
+     *
+     * @param \App\Services\EmbeddingService $embeddingService
+     * @param \App\Services\VectorDatabaseService $vectorDbService
+     * @param \App\Services\FileParsingService $fileParsingService
+     * @return void
+     */
+    public function handle(
+        EmbeddingService $embeddingService,
+        VectorDatabaseService $vectorDbService,
+        FileParsingService $fileParsingService
+    ): void {
         $this->file->update(['status' => 'processing']);
 
         try {
-            // 2. Parse text from the file
-            $text = Pdf::getText(storage_path('app/' . $this->file->storage_path));
+            $text = $fileParsingService->getTextFromFile($this->file->storage_path);
+            $rawChunks = str_split($text, 1000);
 
-            // 3. Chunk the text (this is a simplified example)
-            $chunks = str_split($text, 1000); // Simple chunking, can be improved
+            foreach ($rawChunks as $chunkContent) {
+                // This loop is the main change.
+                // We process one chunk at a time.
 
-            // 4. Generate embeddings for each chunk
-            $embeddings = $embeddingService->generateEmbeddings($chunks);
+                // 1. Save the single chunk to the local DB to get an ID.
+                $savedChunk = $this->file->textChunks()->create(['content' => $chunkContent]);
 
-            // 5. Store chunks and their embeddings in the database
-            foreach ($chunks as $index => $chunkContent) {
-                $this->file->textChunks()->create([
-                    'content' => $chunkContent,
-                    'embedding' => $embeddings[$index],
-                ]);
+                // 2. Generate an embedding for this single chunk.
+                $embedding = $embeddingService->generateEmbedding($savedChunk->content);
+
+                // 3. Upsert this single embedding to Pinecone.
+                $vectorDbService->upsert(collect([$savedChunk]), [$embedding]);
             }
 
-            // 6. Mark as completed
             $this->file->update(['status' => 'completed']);
+
         } catch (\Exception $e) {
             $this->file->update(['status' => 'failed']);
-            // Log the error
+            Log::error('Failed to process knowledge file: ' . $e->getMessage(), [
+                'file_id' => $this->file->id,
+                'exception' => $e
+            ]);
         }
     }
 }

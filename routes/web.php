@@ -2,9 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 // routes/web.php
-
+use App\Livewire\ChatInterface;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Api\V1\ChatController;
+use App\Livewire\FileUpload;
 
 // --- Guest Routes ---
 // Routes that are only accessible when the user is not logged in.
@@ -29,3 +31,10 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 });
+Route::middleware('auth:sanctum')->group(function () {
+    // ... other authenticated routes
+    Route::post('/v1/chat/ask', [ChatController::class, 'ask']);
+});
+
+Route::get('/chat', ChatInterface::class);
+Route::get('/upload', FileUpload::class)->middleware('auth');
