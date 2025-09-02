@@ -36,4 +36,13 @@ class Business extends Model
     {
         return $this->hasMany(KnowledgeFile::class);
     }
+
+    /**
+     * Get the telegram bots for the business.
+     * A business can have multiple telegram bots.
+     */
+    public function telegramBots(): HasMany
+    {
+        return $this->hasMany(TelegramBot::class);
+    }
 }

@@ -6,6 +6,7 @@ use App\Models\TextChunk;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection; // Import the base Collection
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class VectorDatabaseService
 {
@@ -39,27 +40,43 @@ class VectorDatabaseService
     }
 
     /**
-     * Finds the most similar text chunks from Pinecone.
+     * Finds the most similar text chunks from Pinecone with caching.
      *
      * @param array $queryVector
      * @param int $businessId
      * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function findSimilarChunks(array $queryVector, int $businessId, int $limit = 5): EloquentCollection
+    public function findSimilarChunks(array $queryVector, int $businessId, int $limit = 3): EloquentCollection
     {
-        $response = Http::withHeaders([
-            'Api-Key' => config('services.pinecone.api_key'),
-        ])->post(config('services.pinecone.host') . '/query', [
-            'vector' => $queryVector,
-            'topK' => $limit,
-            'includeMetadata' => true,
-        ]);
+        $vectorKey = md5(json_encode($queryVector));
+        $cacheKey = "similar_chunks:{$businessId}:{$vectorKey}";
 
-        $matches = $response->json('matches');
-        $chunkIds = collect($matches)->pluck('id');
+        return Cache::remember($cacheKey, 3600, function () use ($queryVector, $businessId, $limit) {
+            $response = Http::withHeaders([
+                'Api-Key' => config('services.pinecone.api_key'),
+            ])
+            ->timeout(10)
+            ->post(config('services.pinecone.host') . '/query', [
+                'vector' => $queryVector,
+                'topK' => $limit,
+                'includeMetadata' => true,
+                'filter' => [
+                    'business_id' => $businessId
+                ]
+            ]);
 
-        // Retrieve the chunk models from our local database.
-        return TextChunk::whereIn('id', $chunkIds)->get();
+            $matches = $response->json('matches');
+            if (empty($matches)) {
+                return new EloquentCollection();
+            }
+
+            $chunkIds = collect($matches)->pluck('id');
+            
+            // Eager load any relationships and order by the order of IDs we got from vector search
+            return TextChunk::whereIn('id', $chunkIds)
+                ->orderByRaw("FIELD(id, " . $chunkIds->join(',') . ")")
+                ->get();
+        });
     }
 }
