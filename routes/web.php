@@ -1,40 +1,54 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-// routes/web.php
-use App\Livewire\ChatInterface;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Api\V1\ChatController;
-use App\Livewire\FileUpload;
+// No longer need ChatPageController for this route
+use App\Http\Controllers\Api\V1\BusinessController;
+use App\Http\Controllers\Api\V1\ChatController as ApiChatController;
+use App\Livewire\ChatInterface; // Import the Livewire component
 
-// --- Guest Routes ---
-// Routes that are only accessible when the user is not logged in.
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// --- Public Home Page ---
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
+
+
+// --- Guest-Only Routes ---
 Route::middleware('guest')->group(function () {
-    // Registration routes
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('register', [RegisteredUserController::class, 'store']);
 
-    // Login routes
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 });
 
-// --- Authenticated Routes ---
-// Routes that require a user to be logged in.
-Route::middleware('auth')->group(function () {
-    // Logout route
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-    // Your dashboard or other protected routes
+// --- Authenticated User Routes ---
+Route::middleware('auth')->group(function () {
+    // General Authenticated Routes
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-});
-Route::middleware('auth:sanctum')->group(function () {
-    // ... other authenticated routes
-    Route::post('/v1/chat/ask', [ChatController::class, 'ask']);
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    // Chat & AI Assistant (Business) Routes
+    // MODIFIED: Route now points directly to the Livewire component
+    Route::get('/chat', ChatInterface::class)->name('chat');
+    Route::post('/business', [BusinessController::class, 'store'])->name('business.store');
+    Route::post('/business/telegram', [BusinessController::class, 'updateTelegram'])->name('business.telegram.update');
 });
 
-Route::get('/chat', ChatInterface::class);
-Route::get('/upload', FileUpload::class)->middleware('auth');
+
+// --- Authenticated API Routes ---
+Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    Route::post('/chat/ask', [ApiChatController::class, 'ask'])->name('api.chat.ask');
+});
+

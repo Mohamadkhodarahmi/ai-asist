@@ -4,47 +4,51 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Services\ChatService;
-use Illuminate\Support\Facades\Auth; // Import the Auth facade
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.app-layout')]
 class ChatInterface extends Component
 {
     public string $newMessage = '';
     public array $history = [];
-    public ?int $businessId; // Make businessId nullable
+    public ?int $businessId;
+    public bool $loading = false;
 
-    /**
-     * The mount method is like a constructor for Livewire components.
-     * It runs when the component is first loaded.
-     */
     public function mount()
     {
-        // Get the business ID from the currently authenticated user.
-        $this->businessId = Auth::user()->business_id;
+        $this->businessId = Auth::user()->business?->id;
+        // Initialize with a welcome message if the history is empty
+        if (empty($this->history)) {
+            $this->history[] = ['source' => 'ai', 'message' => 'Hello! How can I help you today based on your document?'];
+        }
     }
 
     public function sendMessage(ChatService $chatService)
     {
-        // First, check if the user is actually part of a business.
-        if (is_null($this->businessId)) {
-            $this->history[] = ['source' => 'ai', 'message' => 'Error: Your user account is not linked to a business.'];
+        if (is_null($this->businessId) || empty(trim($this->newMessage))) {
             return;
         }
 
-        // Add user's message to the history
-        $this->history[] = ['source' => 'user', 'message' => $this->newMessage];
+        // Add user's message to history and store the question
+        $question = $this->newMessage;
+        $this->history[] = ['source' => 'user', 'message' => $question];
+        
+        // Clear the input field immediately and set the loading state
+        $this->newMessage = ''; 
+        $this->loading = true;
 
-        // Call the backend service with the correct business ID
-        $response = $chatService->getAnswer($this->newMessage, $this->businessId);
+        // Call the service to get the AI's answer
+        $response = $chatService->getAnswer($question, $this->businessId);
 
-        // Add AI's response to the history
+        // Add AI's response to the history and turn off the loading state
         $this->history[] = ['source' => 'ai', 'message' => $response];
-
-        // Clear the input box
-        $this->newMessage = '';
+        $this->loading = false;
     }
 
     public function render()
     {
-        return view('livewire.chat-interface')->layout('layouts.app');
+        return view('livewire.chat-interface');
     }
 }
+
