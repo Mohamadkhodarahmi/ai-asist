@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Api\V1\BusinessController;
 use App\Http\Controllers\Api\V1\ChatController as ApiChatController;
 use App\Livewire\ChatInterface; // Import the Livewire component
+use App\Livewire\FileUpload;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/chat', ChatInterface::class)->name('chat');
     Route::post('/business', [BusinessController::class, 'store'])->name('business.store');
     Route::post('/business/telegram', [BusinessController::class, 'updateTelegram'])->name('business.telegram.update');
+
+    Route::get('/upload', FileUpload::class)->name('upload');
 });
 
 

@@ -29,8 +29,8 @@
                                 <a href="{{ route('chat') }}" class="w-full sm:w-auto text-center py-3 px-6 bg-[#f53003] text-white rounded-lg hover:bg-[#c41e00] transition-colors font-semibold shadow-lg">
                                     Go to Chat
                                 </a>
-                                <a href="{{ route('chat') }}" class="w-full sm:w-auto text-center py-3 px-6 bg-gray-100 dark:bg-[#3E3E3A] text-[#1b1b18] dark:text-[#EDEDEC] rounded-lg hover:bg-gray-200 dark:hover:bg-[#4a4a46] transition-colors font-semibold">
-                                    Manage Assistant
+                                <a href="{{ route('upload') }}" class="w-full sm:w-auto text-center py-3 px-6 bg-gray-100 dark:bg-[#3E3E3A] text-[#1b1b18] dark:text-[#EDEDEC] rounded-lg hover:bg-gray-200 dark:hover:bg-[#4a4a46] transition-colors font-semibold">
+                                    Manage Files
                                 </a>
                             </div>
                         </div>
@@ -54,3 +54,4 @@
         </div>
     </div>
 </x-app-layout>
+
