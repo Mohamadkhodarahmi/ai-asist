@@ -4,11 +4,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\KnowledgeFileController;
 use App\Http\Controllers\Api\V1\ChatController;
+use App\Http\Controllers\Api\V1\TelegramWebhookController;
 
 // This route returns the authenticated user's information.
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('/v1/telegram/webhook/{token}', [TelegramWebhookController::class, 'handle'])
+    ->name('telegram.webhook');
 
 // Group all our version 1 API routes under a protected middleware.
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {

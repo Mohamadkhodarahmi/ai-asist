@@ -17,6 +17,7 @@ class Business extends Model
      */
     protected $fillable = [
         'name',
+        'telegram_token'
     ];
 
     /**

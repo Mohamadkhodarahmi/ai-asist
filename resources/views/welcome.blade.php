@@ -1,3 +1,4 @@
+{{-- welcome.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,7 +97,6 @@
     </style>
 </head>
 <body class="gradient-bg dark:bg-gradient-to-br dark:from-[#0a0a0a] dark:to-[#1a1a1a] text-[#1b1b18] dark:text-white">
-    <!-- Header -->
     <header class="w-full px-6 lg:px-8 py-4 animate-fade-slide-in">
         <nav class="max-w-6xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -105,27 +105,38 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
                     </svg>
                 </div>
-                <span class="text-lg font-bold">AI Assistant Builder</span>
+                <span class="text-lg font-bold">{{ config('app.name', 'AI Assistant Builder') }}</span>
             </div>
             
-            <div class="flex items-center gap-2">
-                <a href="#" class="hidden sm:inline-block px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-[#f53003] transition-colors">
-                    Pricing
-                </a>
-                <a href="#" class="hidden sm:inline-block px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-[#f53003] transition-colors">
-                    Examples
-                </a>
-                <a href="#" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md transition-all">
-                    Log in
-                </a>
-                <a href="#" class="px-5 py-2 bg-[#f53003] text-white rounded-lg text-sm font-medium hover:bg-[#e02d00] transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-95">
-                    Start Free
-                </a>
-            </div>
+            @if (Route::has('login'))
+                <div class="flex items-center gap-2">
+                    <a href="#features" class="hidden sm:inline-block px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-[#f53003] transition-colors">
+                        Features
+                    </a>
+                    <a href="#faq" class="hidden sm:inline-block px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-[#f53003] transition-colors">
+                        FAQ
+                    </a>
+                    
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md transition-all">
+                            Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md transition-all">
+                            Log in
+                        </a>
+
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="px-5 py-2 bg-[#f53003] text-white rounded-lg text-sm font-medium hover:bg-[#e02d00] transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-95">
+                                Start Free
+                            </a>
+                        @endif
+                    @endauth
+                </div>
+            @endif
         </nav>
     </header>
 
-    <!-- Hero Section -->
     <section class="max-w-6xl mx-auto px-6 lg:px-8 py-12 lg:py-20">
         <div class="grid lg:grid-cols-2 gap-12 items-center">
             <div class="animate-fade-slide-up">
@@ -149,7 +160,7 @@
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4 mb-8">
-                    <a href="#" class="inline-flex items-center justify-center px-8 py-4 bg-[#f53003] text-white rounded-xl font-semibold text-lg hover:bg-[#e02d00] transition-all hover:shadow-lg hover:-translate-y-1 active:scale-95 animate-pulse-glow">
+                    <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-4 bg-[#f53003] text-white rounded-xl font-semibold text-lg hover:bg-[#e02d00] transition-all hover:shadow-lg hover:-translate-y-1 active:scale-95 animate-pulse-glow">
                         Create Your AI Assistant
                         <svg class="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -163,7 +174,6 @@
                     </a>
                 </div>
                 
-                <!-- Social Proof -->
                 <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                     <div class="flex -space-x-2">
                         <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full border-2 border-white dark:border-gray-800"></div>
@@ -175,7 +185,6 @@
                 </div>
             </div>
             
-            <!-- Demo Preview -->
             <div class="animate-fade-slide-up lg:animate-float" style="animation-delay: 200ms;">
                 <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-6 border border-gray-100 dark:border-gray-800">
                     <div class="flex items-center gap-2 mb-4">
@@ -216,7 +225,6 @@
         </div>
     </section>
 
-    <!-- Interactive Demo Section -->
     <section id="demo" class="bg-gray-50 dark:bg-gray-900/50 py-16">
         <div class="max-w-4xl mx-auto px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -244,8 +252,7 @@
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="max-w-6xl mx-auto px-6 lg:px-8 py-16">
+    <section id="features" class="max-w-6xl mx-auto px-6 lg:px-8 py-16">
         <div class="text-center mb-16">
             <h2 class="text-3xl lg:text-4xl font-bold mb-4">Everything You Need to Build Smart AI</h2>
             <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">From document upload to deployed chatbot in under 5 minutes. No technical skills required.</p>
@@ -344,7 +351,6 @@
         </div>
     </section>
 
-    <!-- Testimonials -->
     <section class="bg-gray-50 dark:bg-gray-900/50 py-16">
         <div class="max-w-6xl mx-auto px-6 lg:px-8">
             <div class="text-center mb-16">
@@ -398,20 +404,19 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
     <section class="max-w-4xl mx-auto px-6 lg:px-8 py-16">
         <div class="bg-gradient-to-r from-[#f53003] to-[#ff4b20] rounded-3xl p-12 text-center text-white">
             <h2 class="text-3xl lg:text-4xl font-bold mb-4">Ready to Build Your AI Assistant?</h2>
             <p class="text-xl mb-8 opacity-90">Join thousands of teams already using smart AI to transform their workflow</p>
             
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-                <a href="#" class="inline-flex items-center px-8 py-4 bg-white text-[#f53003] rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all hover:shadow-lg hover:-translate-y-1 active:scale-95">
+                <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-4 bg-white text-[#f53003] rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all hover:shadow-lg hover:-translate-y-1 active:scale-95">
                     Start Building for Free
                     <svg class="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                     </svg>
                 </a>
-                <a href="#" class="inline-flex items-center px-8 py-4 border-2 border-white/30 text-white rounded-xl font-semibold text-lg hover:border-white hover:bg-white/10 transition-all">
+                <a href="#demo" class="inline-flex items-center px-8 py-4 border-2 border-white/30 text-white rounded-xl font-semibold text-lg hover:border-white hover:bg-white/10 transition-all">
                     Schedule Demo
                 </a>
             </div>
@@ -439,8 +444,7 @@
         </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="max-w-4xl mx-auto px-6 lg:px-8 py-16">
+    <section id="faq" class="max-w-4xl mx-auto px-6 lg:px-8 py-16">
         <div class="text-center mb-12">
             <h2 class="text-3xl lg:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
             <p class="text-xl text-gray-600 dark:text-gray-300">Everything you need to know about building AI assistants</p>
@@ -499,7 +503,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="max-w-6xl mx-auto px-6 lg:px-8">
             <div class="grid lg:grid-cols-4 gap-8">
@@ -529,18 +532,18 @@
                 <div>
                     <h4 class="font-semibold mb-4">Product</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">Pricing</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">API Documentation</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Integrations</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Integrations</a></li>
                     </ul>
                 </div>
                 
                 <div>
                     <h4 class="font-semibold mb-4">Resources</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Tutorials</a></li>
+                        <li><a href="#faq" class="hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#demo" class="hover:text-white transition-colors">Tutorials</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">Community</a></li>
                     </ul>
