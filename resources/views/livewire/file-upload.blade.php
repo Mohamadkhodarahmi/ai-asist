@@ -38,6 +38,18 @@
                             <td class="p-3">{{ ucfirst($file->status) }}</td>
                             <td class="p-3">{{ $file->created_at->format('Y-m-d H:i') }}</td>
                             <td class="p-3">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <label class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Preset:</label>
+                                    <select
+                                        class="text-xs rounded-md border border-[#e3e3e0] dark:border-[#3E3E3A] bg-white dark:bg-[#161615] text-[#1b1b18] dark:text-[#EDEDEC] p-1"
+                                        wire:change="applyPreset({{ $file->id }}, $event.target.value)"
+                                    >
+                                        <option value="" selected disabled>Choose…</option>
+                                        <option value="friendly">Friendly</option>
+                                        <option value="formal">Formal</option>
+                                        <option value="concise">Concise</option>
+                                    </select>
+                                </div>
                                 <textarea
                                     wire:model.defer="prompts.{{ $file->id }}"
                                     rows="3"

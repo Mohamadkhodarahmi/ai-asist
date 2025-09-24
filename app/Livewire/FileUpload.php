@@ -17,6 +17,17 @@ class FileUpload extends Component
 
     public array $prompts = [];
 
+    /**
+     * Minimal presets to help non-technical users.
+     *
+     * @var array<string, string>
+     */
+    public array $promptPresets = [
+        'friendly' => 'Use a friendly, warm, and encouraging tone.',
+        'formal' => 'Use a professional and formal tone. Be precise.',
+        'concise' => 'Answer concisely in 1-3 short sentences.',
+    ];
+
     public function mount()
     {
         // Load the business and its files for the authenticated user.
@@ -72,6 +83,15 @@ class FileUpload extends Component
         ]);
 
         session()->flash('message', 'Prompt saved for '.$file->original_name.'.');
+    }
+
+    public function applyPreset(int $fileId, string $presetKey): void
+    {
+        if (! array_key_exists($presetKey, $this->promptPresets)) {
+            return;
+        }
+
+        $this->prompts[$fileId] = $this->promptPresets[$presetKey];
     }
 
     public function render()
