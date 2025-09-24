@@ -39,5 +39,9 @@ return [
         'host' => env('PINECONE_HOST'),
     ],
 
+    'telegram' => [
+        // Optional: If you set this, Telegram will include this header in webhook calls
+        'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
+    ],
 
 ];
