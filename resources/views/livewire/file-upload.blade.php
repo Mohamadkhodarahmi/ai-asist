@@ -27,18 +27,38 @@
                             <th class="p-3">File Name</th>
                             <th class="p-3">Status</th>
                             <th class="p-3">Uploaded At</th>
+                            <th class="p-3 w-1/2">Custom System Prompt</th>
+                            <th class="p-3">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                     @forelse ($business->knowledgeFiles as $file)
-                        <tr class="border-b border-[#e3e3e0] dark:border-[#3E3E3A]">
+                        <tr class="border-b border-[#e3e3e0] dark:border-[#3E3E3A] align-top">
                             <td class="p-3">{{ $file->original_name }}</td>
                             <td class="p-3">{{ ucfirst($file->status) }}</td>
                             <td class="p-3">{{ $file->created_at->format('Y-m-d H:i') }}</td>
+                            <td class="p-3">
+                                <textarea
+                                    wire:model.defer="prompts.{{ $file->id }}"
+                                    rows="3"
+                                    class="w-full rounded-md border border-[#e3e3e0] dark:border-[#3E3E3A] bg-white dark:bg-[#161615] text-[#1b1b18] dark:text-[#EDEDEC] p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#f53003]"
+                                    placeholder="E.g. Answer in a friendly tone. Prefer bullet points. Use metric units."
+                                ></textarea>
+                                @error('prompts.' . $file->id) <span class="text-red-600 text-xs mt-1">{{ $message }}</span> @enderror
+                            </td>
+                            <td class="p-3">
+                                <button
+                                    wire:click="savePrompt({{ $file->id }})"
+                                    class="py-2 px-3 bg-[#f53003] text-white rounded-md hover:bg-[#c41e00] transition-colors text-sm font-semibold"
+                                >
+                                    <span wire:loading.remove wire:target="savePrompt({{ $file->id }})">Save</span>
+                                    <span wire:loading wire:target="savePrompt({{ $file->id }})">Saving...</span>
+                                </button>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3" class="p-3 text-center text-[#706f6c] dark:text-[#A1A09A]">You have not uploaded any files yet.</td>
+                            <td colspan="5" class="p-3 text-center text-[#706f6c] dark:text-[#A1A09A]">You have not uploaded any files yet.</td>
                         </tr>
                     @endforelse
                     </tbody>

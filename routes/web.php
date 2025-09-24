@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\RegisteredUserController;
-// No longer need ChatPageController for this route
 use App\Http\Controllers\Api\V1\BusinessController;
 use App\Http\Controllers\Api\V1\ChatController as ApiChatController;
-use App\Livewire\ChatInterface; // Import the Livewire component
-use App\Livewire\FileUpload;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+// No longer need ChatPageController for this route
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Livewire\ChatInterface;
+use App\Livewire\FileUpload; // Import the Livewire component
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +20,15 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// --- Public Static Pages ---
+Route::view('/pricing', 'pricing')->name('pricing');
+Route::view('/docs', 'docs')->name('docs');
+Route::view('/blog', 'blog')->name('blog');
+Route::view('/community', 'community')->name('community');
+Route::view('/about', 'about')->name('about');
+Route::view('/privacy', 'privacy')->name('privacy');
+Route::view('/terms', 'terms')->name('terms');
+Route::view('/contact', 'contact')->name('contact');
 
 // --- Guest-Only Routes ---
 Route::middleware('guest')->group(function () {
@@ -29,7 +38,6 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 });
-
 
 // --- Authenticated User Routes ---
 Route::middleware('auth')->group(function () {
@@ -49,9 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/upload', FileUpload::class)->name('upload');
 });
 
-
 // --- Authenticated API Routes ---
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('/chat/ask', [ApiChatController::class, 'ask'])->name('api.chat.ask');
 });
-

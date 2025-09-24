@@ -7,7 +7,6 @@
     <title>AI Assistant Builder - Turn Documents Into Smart AI Chatbots</title>
     <meta name="description" content="Transform your documents into intelligent AI assistants in minutes. Upload any file and create custom chatbots that understand your content perfectly.">
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes fade-slide-up {
@@ -239,14 +238,24 @@
                     </svg>
                     <h3 class="text-xl font-semibold mb-2">Drop your document here</h3>
                     <p class="text-gray-600 dark:text-gray-400 mb-4">PDF, DOCX, TXT files up to 10MB</p>
-                    <button class="px-6 py-2 bg-[#f53003] text-white rounded-lg hover:bg-[#e02d00] transition-colors">
-                        Choose File
-                    </button>
+                    @auth
+                        <a href="{{ route('upload') }}" class="inline-block px-6 py-2 bg-[#f53003] text-white rounded-lg hover:bg-[#e02d00] transition-colors">
+                            Choose File
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="inline-block px-6 py-2 bg-[#f53003] text-white rounded-lg hover:bg-[#e02d00] transition-colors">
+                            Choose File
+                        </a>
+                    @endauth
                 </div>
                 
                 <div class="text-center text-sm text-gray-500 dark:text-gray-400">
                     <span>Or try with our sample document: </span>
-                    <button class="text-[#f53003] hover:underline">Company Handbook.pdf</button>
+                    @auth
+                        <a href="{{ route('chat') }}" class="text-[#f53003] hover:underline">Company Handbook.pdf</a>
+                    @else
+                        <a href="{{ route('login') }}" class="text-[#f53003] hover:underline">Company Handbook.pdf</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -566,6 +575,8 @@
         </div>
     </footer>
 
+    
+
     <script>
         // Add some interactive behavior
         document.addEventListener('DOMContentLoaded', function() {
@@ -607,5 +618,35 @@
             });
         });
     </script>
+
+    <script>
+        window.chatWidgetConfig = {
+            "id": 1,
+            "name": "رضا",
+            "description": "این یک ویجت جدید است.",
+            "welcome_message": "سلام من علی هستم در قالب رضا. چه کمکی میتونم بکنم بهت؟!",
+            "tone": "دوستانه",
+            "font": "Vazirmatn",
+            "lang": "fa",
+            "is_active": true,
+            "kb_ids": [
+                1
+            ],
+            "mode": "هوش مصنوعی",
+            "domain": "",
+            "colors": {
+                "primary": "#6366F1",
+                "background": "#F8F9FA",
+                "text": "#212529",
+                "header_background": "#4F46E5",
+                "bot_message_background": "#E9ECEF",
+                "user_message_background": "#6366F1",
+                "user_message_text": "#FFFFFF"
+            }
+        };
+    </script>
+    <script type="module" src="https://w.neotalk-ai.com/widget-loader.js"></script>
+
+    
 </body>
 </html>

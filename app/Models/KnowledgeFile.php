@@ -21,6 +21,7 @@ class KnowledgeFile extends Model
         'original_name',
         'storage_path',
         'status',
+        'system_prompt',
     ];
 
     /**

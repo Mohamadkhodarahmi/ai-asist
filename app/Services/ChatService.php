@@ -7,8 +7,11 @@ use Illuminate\Support\Facades\Http;
 class ChatService
 {
     protected EmbeddingService $embeddingService;
+
     protected VectorDatabaseService $vectorDbService;
+
     protected string $apiKey;
+
     protected string $baseUrl;
 
     public function __construct(EmbeddingService $embeddingService, VectorDatabaseService $vectorDbService)
@@ -31,16 +34,29 @@ class ChatService
         }
 
         $context = $relevantChunks->pluck('content')->implode("\n\n---\n\n");
-        $prompt = $this->buildPrompt($context, $question);
+
+        // Collect per-file prompts tied to the retrieved chunks
+        $filePrompts = $relevantChunks
+            ->loadMissing('knowledgeFile')
+            ->pluck('knowledgeFile.system_prompt')
+            ->filter()
+            ->unique()
+            ->values()
+            ->implode("\n- ");
+
+        $prompt = $this->buildPrompt($context, $question, $filePrompts);
 
         return $this->askLanguageModel($prompt);
     }
 
-    private function buildPrompt(string $context, string $question): string
+    private function buildPrompt(string $context, string $question, ?string $filePrompts = null): string
     {
+        $guidance = $filePrompts ? "\nAdditional Guidance (from file-specific system prompts):\n- {$filePrompts}\n" : '';
+
         return <<<PROMPT
         You are a helpful AI assistant. Use the following "Context" to answer the "Question".
         Your answer must be based only on the provided context. If the context does not contain the answer, say so.
+        {$guidance}
 
         Context:
         ---
@@ -55,7 +71,7 @@ class ChatService
     private function askLanguageModel(string $prompt): string
     {
         // Construct the full URL using the base URL.
-        $fullUrl = $this->baseUrl . '/chat/completions';
+        $fullUrl = $this->baseUrl.'/chat/completions';
 
         $response = Http::withToken($this->apiKey)
             ->timeout(60)
@@ -67,6 +83,7 @@ class ChatService
             ]);
 
         $response->throw();
+
         return $response->json('choices.0.message.content');
     }
 }

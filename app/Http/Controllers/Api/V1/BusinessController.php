@@ -3,70 +3,77 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Jobs\ProcessKnowledgeFile;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
-use Throwable;
+use App\Jobs\SetTelegramWebhook;
 use App\Models\Business;
-use App\Services\TelegramService; // Import the new service
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class BusinessController extends Controller
 {
     /**
      * Store a new business (AI Assistant) for the authenticated user.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        // ... (your existing store method remains the same)
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        try {
+            $business = Business::create([
+                'name' => $request->name,
+                'user_id' => $request->user()->id, // assuming a user relation
+            ]);
+
+            return redirect()->route('chat')->with('status', 'Business created successfully!');
+
+        } catch (Throwable $e) {
+            Log::error('Failed to create business: '.$e->getMessage());
+
+            return back()->withErrors(['business' => 'Failed to create business.']);
+        }
     }
 
     /**
-     * Update the Telegram bot token and set the webhook.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Update the Telegram bot token and dispatch webhook job.
      */
     public function updateTelegram(Request $request): RedirectResponse
     {
         $request->validate([
-            'telegram_token' => ['required', 'string', 'regex:/^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$/'],
+            'telegram_token' => [
+                'required',
+                'string',
+                'regex:/^[0-9]{8,10}:[a-zA-Z0-9_-]{35}$/',
+            ],
         ], [
-            'telegram_token.regex' => 'The token format is invalid.'
+            'telegram_token.regex' => 'The token format is invalid.',
         ]);
 
         $business = $request->user()->business;
 
-        if (!$business) {
-            return redirect()->route('chat')->withErrors(['telegram' => 'You must create an assistant first.']);
+        if (! $business) {
+            return redirect()->route('chat')->withErrors([
+                'telegram' => 'You must create an assistant first.',
+            ]);
         }
 
         $token = $request->telegram_token;
 
         try {
-            // 1. Construct the webhook URL. The token is included for security.
-            $webhookUrl = route('telegram.webhook', ['token' => $token]);
-
-            // 2. Use the service to set the webhook with Telegram.
-            $telegramService = new TelegramService($token);
-            $response = $telegramService->setWebhook($webhookUrl);
-
-            // 3. Check if Telegram accepted the webhook.
-            if (!$response->ok() || !$response->json('ok')) {
-                throw new \Exception('Telegram API error: ' . $response->json('description', 'Could not set webhook.'));
-            }
-
-            // 4. If successful, save the token to the database.
+            // 1. Save the token in the database
             $business->update(['telegram_token' => $token]);
 
+            // 2. Dispatch a job to set the Telegram webhook asynchronously
+            SetTelegramWebhook::dispatch($business);
+
         } catch (Throwable $e) {
-            Log::error('Telegram webhook setup failed: ' . $e->getMessage());
-            return back()->withErrors(['telegram_token' => 'Connection failed. Please check your token and try again.']);
+            Log::error('Failed to update Telegram token: '.$e->getMessage());
+
+            return back()->withErrors([
+                'telegram_token' => 'Connection failed. Please check your token and try again.',
+            ]);
         }
 
         return redirect()->route('chat')->with('status', 'Telegram bot connected successfully!');
