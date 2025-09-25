@@ -1,4 +1,7 @@
 <?php
+use App\Http\Controllers\Webhooks\NOWPaymentsWebhookController;
+use Illuminate\Support\Facades\Route;
+
 
 use App\Http\Controllers\Api\V1\ChatController;
 use App\Http\Controllers\Api\V1\KnowledgeFileController;
@@ -6,7 +9,7 @@ use App\Http\Controllers\Api\V1\TelegramBotController;
 use App\Http\Controllers\Api\V1\TelegramWebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
+
 
 // Authenticated user info
 // Test endpoint
@@ -15,6 +18,8 @@ Route::post('/v1/telegram/webhook/test', function (Request $request) {
 
     return response()->json(['status' => 'ok']);
 });
+Route::post('/webhooks/nowpayments', [NOWPaymentsWebhookController::class, 'handle'])->name('webhooks.nowpayments');
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

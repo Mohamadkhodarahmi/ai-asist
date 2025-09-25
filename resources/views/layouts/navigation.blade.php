@@ -25,7 +25,7 @@
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center gap-2">
                 <a href="{{ route('dashboard') }}" 
-                   class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" aria-current="{{ request()->routeIs('dashboard') ? 'page' : null }}">
+                   class="inline-flex items-center px-3.5 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('dashboard') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('dashboard') ? 'page' : null }}">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M4 5h16v4H4V5zm0 10h6v4H4v-4zm10 0h6v4h-6v-4z"/>
@@ -34,7 +34,7 @@
                 </a>
 
                 <a href="{{ route('chat') }}" 
-                   class="nav-link {{ request()->routeIs('chat') ? 'active' : '' }}" aria-current="{{ request()->routeIs('chat') ? 'page' : null }}">
+                   class="inline-flex items-center px-3.5 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('chat') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('chat') ? 'page' : null }}">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0c0-5 4-9 9-9s9 4 9 9z"/>
@@ -43,7 +43,7 @@
                 </a>
 
                 <a href="{{ route('pricing') }}" 
-                   class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">
+                   class="inline-flex items-center px-3.5 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('pricing') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M12 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm0-6v2m0 12v2M4 12h2m12 0h2"/>
@@ -52,7 +52,7 @@
                 </a>
 
                 <a href="{{ route('docs') }}" 
-                   class="nav-link {{ request()->routeIs('docs') ? 'active' : '' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">
+                   class="inline-flex items-center px-3.5 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('docs') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M12 20h9M12 4h9m-9 8h9M3 4h.01M3 12h.01M3 20h.01"/>
@@ -61,7 +61,7 @@
                 </a>
 
                 <a href="{{ route('community') }}" 
-                   class="nav-link {{ request()->routeIs('community') ? 'active' : '' }}" aria-current="{{ request()->routeIs('community') ? 'page' : null }}">
+                   class="inline-flex items-center px-3.5 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('community') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('community') ? 'page' : null }}">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M17 20h5V4H2v16h5m10-4a4 4 0 01-8 0m8 0a4 4 0 00-8 0"/>
@@ -72,10 +72,12 @@
 
             <!-- Right Side: Upload Button & User Menu -->
             <div class="hidden md:flex items-center space-x-4">
+                @unless(request()->routeIs('upload'))
                 <a href="{{ route('upload') }}" 
                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-gradient-to-r from-[#F53003] to-[#FF4433] hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40">
                     Upload
                 </a>
+                @endunless
 
                 <!-- User Menu Dropdown -->
                 <div class="relative" x-data="{ open: false }">
@@ -124,13 +126,15 @@
 
     <!-- Mobile Navigation Menu -->
     <div x-show="mobileMenuOpen" x-transition x-cloak class="md:hidden bg-white dark:bg-[#161615] border-t border-[#e3e3e0] dark:border-[#3E3E3A]">
-        <div class="px-4 py-4 space-y-2">
-            <a href="{{ route('dashboard') }}" class="mobile-nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" aria-current="{{ request()->routeIs('dashboard') ? 'page' : null }}">Dashboard</a>
-            <a href="{{ route('chat') }}" class="mobile-nav-link {{ request()->routeIs('chat') ? 'active' : '' }}" aria-current="{{ request()->routeIs('chat') ? 'page' : null }}">Chat</a>
-            <a href="{{ route('pricing') }}" class="mobile-nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">Pricing</a>
-            <a href="{{ route('docs') }}" class="mobile-nav-link {{ request()->routeIs('docs') ? 'active' : '' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">Docs</a>
-            <a href="{{ route('community') }}" class="mobile-nav-link {{ request()->routeIs('community') ? 'active' : '' }}" aria-current="{{ request()->routeIs('community') ? 'page' : null }}">Community</a>
+        <div class="px-4 py-4 space-y-1">
+            <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base text-[#1b1b18] dark:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('dashboard') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('dashboard') ? 'page' : null }}">Dashboard</a>
+            <a href="{{ route('chat') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('chat') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('chat') ? 'page' : null }}">Chat</a>
+            <a href="{{ route('pricing') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('pricing') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">Pricing</a>
+            <a href="{{ route('docs') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('docs') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">Docs</a>
+            <a href="{{ route('community') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('community') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('community') ? 'page' : null }}">Community</a>
+            @unless(request()->routeIs('upload'))
             <a href="{{ route('upload') }}" class="block px-4 py-3 rounded-lg font-semibold   hover:bg-[#c41e00] transition-all">Upload</a>
+            @endunless
             <div class="pt-4 mt-4 border-t border-[#e3e3e0] dark:border-[#3E3E3A]">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -142,19 +146,3 @@
         </div>
     </div>
 </nav>
-
-<style>
-.nav-link { 
-    @apply inline-flex items-center px-3.5 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40; 
-}
-.nav-link.active { 
-    @apply text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm; 
-}
-.mobile-nav-link { 
-    @apply block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40; 
-}
-.mobile-nav-link.active { 
-    @apply text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10; 
-}
-[x-cloak] { display: none !important; }
-</style>

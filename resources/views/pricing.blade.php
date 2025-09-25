@@ -32,17 +32,26 @@
                         @endforeach
                     </ul>
                     @auth
-                        <form method="POST" action="{{ route('plan.select') }}" class="mt-auto">
-                            @csrf
-                            <input type="hidden" name="plan_id" value="{{ $plan->id }}">
-                            <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-gradient-to-r from-[#F53003] to-[#FF4433] hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40">
-                                @if(auth()->user()->plan?->id === $plan->id)
-                                    Current plan
-                                @else
-                                    Choose {{ $plan->name }}
-                                @endif
-                            </button>
-                        </form>
+                        @if(($plan->price_cents ?? 0) > 0)
+                            <form method="GET" action="{{ route('checkout.create') }}" class="mt-auto">
+                                <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-gradient-to-r from-[#F53003] to-[#FF4433] hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40">
+                                    Buy {{ $plan->name }}
+                                </button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{ route('plan.select') }}" class="mt-auto">
+                                @csrf
+                                <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-gradient-to-r from-[#F53003] to-[#FF4433] hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40">
+                                    @if(auth()->user()->plan?->id === $plan->id)
+                                        Current plan
+                                    @else
+                                        Choose {{ $plan->name }}
+                                    @endif
+                                </button>
+                            </form>
+                        @endif
                     @else
                         <a href="{{ route('login') }}" class="mt-auto w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-gradient-to-r from-[#F53003] to-[#FF4433] hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40">
                             Sign in to choose

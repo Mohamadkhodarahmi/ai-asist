@@ -20,12 +20,16 @@ class DatabaseSeeder extends Seeder
 
         $freePlan = Plan::query()->where('slug', 'free')->first();
 
-        $user = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $user = User::query()->firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                // Set a default password if user is created
+                'password' => bcrypt('password'),
+            ]
+        );
 
-        if ($freePlan) {
+        if ($freePlan && $user->plan_id !== $freePlan->id) {
             $user->plan()->associate($freePlan);
             $user->save();
         }

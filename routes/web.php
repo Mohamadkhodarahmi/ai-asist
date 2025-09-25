@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\BusinessController;
 use App\Http\Controllers\Api\V1\ChatController as ApiChatController;
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 // No longer need ChatPageController for this route
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -53,6 +54,8 @@ Route::middleware('auth')->group(function () {
     // MODIFIED: Route now points directly to the Livewire component
     Route::get('/chat', ChatInterface::class)->name('chat');
     Route::post('/plan/select', [PlanController::class, 'select'])->name('plan.select');
+    Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
+    Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
     Route::post('/business', [BusinessController::class, 'store'])->name('business.store');
     Route::post('/business/telegram', [BusinessController::class, 'updateTelegram'])->name('business.telegram.update');
 
