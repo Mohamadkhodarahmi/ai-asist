@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Services\ChatService;
+use App\Services\PlanLimiter;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 
@@ -24,9 +25,15 @@ class ChatInterface extends Component
         }
     }
 
-    public function sendMessage(ChatService $chatService)
+    public function sendMessage(ChatService $chatService, PlanLimiter $planLimiter)
     {
         if (is_null($this->businessId) || empty(trim($this->newMessage))) {
+            return;
+        }
+
+        $user = Auth::user();
+        if (! $planLimiter->canSendMessage($user)) {
+            $this->dispatch('toast', type: 'error', message: 'Daily message limit reached for your plan.');
             return;
         }
 
@@ -40,6 +47,9 @@ class ChatInterface extends Component
 
         // Call the service to get the AI's answer
         $response = $chatService->getAnswer($question, $this->businessId);
+
+        // Count towards plan usage only if we attempted a message
+        $planLimiter->hit($user);
 
         // Add AI's response to the history and turn off the loading state
         $this->history[] = ['source' => 'ai', 'message' => $response];

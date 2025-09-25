@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -38,6 +39,12 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        // Default to Free plan if available
+        if ($freePlan = Plan::query()->where('slug', 'free')->first()) {
+            $user->plan()->associate($freePlan);
+            $user->save();
+        }
 
         // Log the user in.
         Auth::login($user);
