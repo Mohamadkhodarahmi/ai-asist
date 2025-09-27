@@ -619,34 +619,6 @@
         });
     </script>
 
-    <script>
-        window.chatWidgetConfig = {
-            "id": 1,
-            "name": "رضا",
-            "description": "این یک ویجت جدید است.",
-            "welcome_message": "سلام من علی هستم در قالب رضا. چه کمکی میتونم بکنم بهت؟!",
-            "tone": "دوستانه",
-            "font": "Vazirmatn",
-            "lang": "fa",
-            "is_active": true,
-            "kb_ids": [
-                1
-            ],
-            "mode": "هوش مصنوعی",
-            "domain": "",
-            "colors": {
-                "primary": "#6366F1",
-                "background": "#F8F9FA",
-                "text": "#212529",
-                "header_background": "#4F46E5",
-                "bot_message_background": "#E9ECEF",
-                "user_message_background": "#6366F1",
-                "user_message_text": "#FFFFFF"
-            }
-        };
-    </script>
-    <script type="module" src="https://w.neotalk-ai.com/widget-loader.js"></script>
-
     
 </body>
 </html>
