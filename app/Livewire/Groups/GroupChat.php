@@ -58,6 +58,9 @@ class GroupChat extends Component
             'message' => $userMessage->message,
         ]);
 
+        // Broadcast the message
+        broadcast(new \App\Events\GroupMessageSent($userMessage))->toOthers();
+
         $this->reset('message');
         $this->group->load(['messages.user', 'files.knowledgeFile', 'members' => function ($query) {
             $query->withPivot('role');
@@ -117,6 +120,9 @@ class GroupChat extends Component
                 'ai_message_id' => $aiMessage->id,
                 'message_content' => $aiMessage->message,
             ]);
+
+            // Broadcast the AI response
+            broadcast(new \App\Events\GroupMessageSent($aiMessage));
 
             $this->group->load(['messages.user', 'files.knowledgeFile', 'members' => function ($query) {
                 $query->withPivot('role');
