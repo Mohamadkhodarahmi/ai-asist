@@ -49,6 +49,19 @@
             }
         }
         
+        @keyframes shimmer-sweep {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        .animate-shimmer {
+            animation: shimmer-sweep 3s infinite;
+        }
+        
         .btn-shimmer {
             position: relative;
             background-size: 200% 100%;
@@ -108,35 +121,49 @@
         <h1 class="text-4xl font-bold mb-12 text-center">Choose Your Plan</h1>
 
         {{-- Pricing Grid --}}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             @foreach($plans as $plan)
                 @php
                     $isRecommended = $loop->iteration === 2 && $plans->count() >= 3;
                     $isCurrentPlan = auth()->check() && auth()->user()->plan?->id === $plan->id;
                 @endphp
                 
-                <div class="relative rounded-2xl p-8 flex flex-col border transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl
-                            @if($isRecommended)
-                                border-[#F53003] shadow-xl shadow-[#F53003]/20 dark:bg-[#1a1a1a] lg:scale-105
-                            @else
-                                border-[#e3e3e0] dark:border-[#2a2a2a] dark:bg-[#141414] hover:border-[#F53003]
-                            @endif">
+                {{-- Card Wrapper with extra space for badge --}}
+                <div class="@if($isRecommended) pt-6 @endif">
+                    <div class="relative rounded-2xl p-8 flex flex-col border transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl
+                                @if($isRecommended)
+                                    border-[#F53003] shadow-xl shadow-[#F53003]/20 dark:bg-[#1a1a1a] lg:scale-105
+                                @else
+                                    border-[#e3e3e0] dark:border-[#2a2a2a] dark:bg-[#141414] hover:border-[#F53003]
+                                @endif">
 
-                    {{-- Recommended Badge --}}
-                    @if($isRecommended)
-                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 badge-bounce">
-                            <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold 
-                                         bg-gradient-to-r from-[#F53003] to-[#ff4422] text-white shadow-lg shadow-[#F53003]/30">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                </svg>
-                                Most Popular
-                            </span>
-                        </div>
-                    @endif
+                        {{-- Recommended Badge --}}
+                        @if($isRecommended)
+                            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 w-full flex justify-center">
+                                <div class="relative">
+                                    <div class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-extrabold uppercase tracking-wider
+                                                bg-gradient-to-r from-[#F53003] to-[#ff4422] 
+                                                text-white 
+                                                shadow-[0_4px_14px_0_rgba(245,48,3,0.5)]
+                                                border border-[#ff6644]
+                                                relative overflow-hidden
+                                                whitespace-nowrap">
+                                        {{-- Shine effect --}}
+                                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+                                        
+                                        <svg class="w-3 h-3 relative z-10 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                        <span class="relative z-10">Most Popular</span>
+                                    </div>
+                                    {{-- Enhanced glow --}}
+                                    <div class="absolute -inset-1 bg-gradient-to-r from-[#F53003] to-[#ff4422] rounded-lg blur opacity-75 -z-10 animate-pulse"></div>
+                                </div>
+                            </div>
+                        @endif
 
-                    {{-- Plan Name --}}
-                    <h2 class="text-2xl font-bold mb-4 @if($isRecommended) mt-2 @endif">{{ $plan->name }}</h2>
+                        {{-- Plan Name --}}
+                        <h2 class="text-2xl font-bold mb-4">{{ $plan->name }}</h2>
 
                     {{-- Price --}}
                     <div class="mb-6">
@@ -260,6 +287,7 @@
                             </a>
                         @endauth
                     </div>
+                </div>
                 </div>
             @endforeach
         </div>
