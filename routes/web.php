@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\Api\V1\BusinessController;
 use App\Http\Controllers\Api\V1\ChatController as ApiChatController;
-use App\Http\Controllers\PlanController;
-use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-// No longer need ChatPageController for this route
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\CheckoutController;
+// No longer need ChatPageController for this route
+use App\Http\Controllers\PlanController;
 use App\Livewire\ChatInterface;
 use App\Livewire\FileUpload; // Import the Livewire component
 use Illuminate\Support\Facades\Route;
@@ -23,7 +23,7 @@ Route::get('/', function () {
 })->name('home');
 
 // --- Public Static Pages ---
-Route::view('/pricing', 'pricing')->name('pricing');
+
 Route::view('/docs', 'docs')->name('docs');
 Route::view('/blog', 'blog')->name('blog');
 Route::view('/community', 'community')->name('community');
@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+    Route::get('/pricing', [PlanController::class, 'index'])->name('pricing');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
@@ -60,6 +61,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/business/telegram', [BusinessController::class, 'updateTelegram'])->name('business.telegram.update');
 
     Route::get('/upload', FileUpload::class)->name('upload');
+
+    // Groups routes
+    Route::get('/groups', \App\Livewire\Groups\GroupList::class)->name('groups.index');
+    Route::get('/groups/{group}', \App\Livewire\Groups\GroupChat::class)->name('groups.chat');
 });
 
 // --- Authenticated API Routes ---

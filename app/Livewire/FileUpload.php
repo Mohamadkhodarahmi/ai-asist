@@ -13,7 +13,7 @@ class FileUpload extends Component
 
     public $document;
 
-    public Business $business;
+    public ?Business $business = null;
 
     public array $prompts = [];
 
@@ -32,11 +32,26 @@ class FileUpload extends Component
     {
         // Load the business and its files for the authenticated user.
         $this->business = Auth::user()->business()->with('knowledgeFiles')->first();
+
+        // If user doesn't have a business, create one automatically
+        if (! $this->business) {
+            $this->business = Auth::user()->business()->create([
+                'name' => Auth::user()->name."'s Business",
+            ]);
+        }
+
         $this->prompts = $this->business->knowledgeFiles->pluck('system_prompt', 'id')->toArray();
     }
 
     public function save()
     {
+        // Ensure user has a business
+        if (! $this->business) {
+            session()->flash('error', 'Unable to upload file. Please contact support.');
+
+            return;
+        }
+
         // Validate the uploaded file.
         $this->validate([
             'document' => [
@@ -71,6 +86,12 @@ class FileUpload extends Component
 
     public function savePrompt(int $fileId): void
     {
+        if (! $this->business) {
+            session()->flash('error', 'Unable to save prompt. Please contact support.');
+
+            return;
+        }
+
         $file = $this->business->knowledgeFiles()->whereKey($fileId)->firstOrFail();
         $prompt = $this->prompts[$fileId] ?? null;
 

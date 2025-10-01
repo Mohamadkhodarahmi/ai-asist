@@ -26,14 +26,34 @@ class ChatService
 
     public function getAnswer(string $question, int $businessId): string
     {
+        \Log::info('ChatService: getAnswer called', [
+            'question' => $question,
+            'business_id' => $businessId,
+        ]);
+
         $questionVector = $this->embeddingService->generateEmbedding($question);
+
+        \Log::info('ChatService: Embedding generated', [
+            'vector_length' => count($questionVector),
+        ]);
+
         $relevantChunks = $this->vectorDbService->findSimilarChunks($questionVector, $businessId);
 
+        \Log::info('ChatService: Chunks retrieved', [
+            'chunk_count' => $relevantChunks->count(),
+        ]);
+
         if ($relevantChunks->isEmpty()) {
+            \Log::warning('ChatService: No relevant chunks found');
+
             return "I'm sorry, I couldn't find any relevant information to answer your question.";
         }
 
         $context = $relevantChunks->pluck('content')->implode("\n\n---\n\n");
+
+        \Log::info('ChatService: Context built', [
+            'context_length' => strlen($context),
+        ]);
 
         // Collect per-file prompts tied to the retrieved chunks
         $filePrompts = $relevantChunks
@@ -46,7 +66,18 @@ class ChatService
 
         $prompt = $this->buildPrompt($context, $question, $filePrompts);
 
-        return $this->askLanguageModel($prompt);
+        \Log::info('ChatService: Prompt built, calling LLM', [
+            'prompt_length' => strlen($prompt),
+        ]);
+
+        $answer = $this->askLanguageModel($prompt);
+
+        \Log::info('ChatService: LLM response received', [
+            'answer_length' => strlen($answer),
+            'answer_preview' => substr($answer, 0, 100),
+        ]);
+
+        return $answer;
     }
 
     private function buildPrompt(string $context, string $question, ?string $filePrompts = null): string
@@ -73,17 +104,55 @@ class ChatService
         // Construct the full URL using the base URL.
         $fullUrl = $this->baseUrl.'/chat/completions';
 
-        $response = Http::withToken($this->apiKey)
-            ->timeout(60)
-            ->post($fullUrl, [
-                'model' => 'gpt-5-nano',
-                'messages' => [['role' => 'user', 'content' => $prompt]],
-                'temperature' => 0.2,
-                'max_tokens' => 1000,
+        \Log::info('ChatService: Calling LLM API', [
+            'url' => $fullUrl,
+            'model' => 'gpt-5-nano',
+        ]);
+
+        try {
+            $response = Http::withToken($this->apiKey)
+                ->timeout(60)
+                ->post($fullUrl, [
+                    'model' => 'gpt-5-nano',
+                    'messages' => [['role' => 'user', 'content' => $prompt]],
+                    'temperature' => 0.2,
+                    'max_tokens' => 1000,
+                ]);
+
+            \Log::info('ChatService: API response status', [
+                'status' => $response->status(),
+                'successful' => $response->successful(),
             ]);
 
-        $response->throw();
+            // Log the FULL response to see structure
+            \Log::info('ChatService: Full API response body', [
+                'body' => $response->body(),
+                'json' => $response->json(),
+            ]);
 
-        return $response->json('choices.0.message.content');
+            if (! $response->successful()) {
+                \Log::error('ChatService: API error response', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+            }
+
+            $response->throw();
+
+            $content = $response->json('choices.0.message.content');
+
+            \Log::info('ChatService: Extracted content from response', [
+                'content_length' => strlen($content ?? ''),
+                'content' => $content,
+            ]);
+
+            return $content;
+        } catch (\Exception $e) {
+            \Log::error('ChatService: Exception in askLanguageModel', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
     }
 }

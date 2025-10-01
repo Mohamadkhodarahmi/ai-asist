@@ -1,0 +1,234 @@
+<?php
+
+namespace App\Livewire\Groups;
+
+use App\Models\Group;
+use App\Models\GroupFile;
+use App\Models\GroupMessage;
+use App\Services\ChatService;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+
+class GroupChat extends Component
+{
+    use WithFileUploads;
+
+    public Group $group;
+
+    public $message = '';
+
+    public $uploadFile;
+
+    public $inviteEmail = '';
+
+    public function mount(Group $group): void
+    {
+        // Check if user is a member
+        if (! $group->members->contains(Auth::id())) {
+            abort(403, 'You are not a member of this group');
+        }
+
+        $this->group = $group->load(['messages.user', 'files.knowledgeFile', 'members' => function ($query) {
+            $query->withPivot('role');
+        }]);
+    }
+
+    public function sendMessage(): void
+    {
+        \Log::info('GroupChat: sendMessage called', [
+            'user_id' => Auth::id(),
+            'group_id' => $this->group->id,
+            'message_length' => strlen($this->message),
+        ]);
+
+        $this->validate([
+            'message' => 'required|string|max:5000',
+        ]);
+
+        $userMessage = GroupMessage::create([
+            'group_id' => $this->group->id,
+            'user_id' => Auth::id(),
+            'message' => $this->message,
+            'is_ai_response' => false,
+        ]);
+
+        \Log::info('GroupChat: User message created', [
+            'message_id' => $userMessage->id,
+            'message' => $userMessage->message,
+        ]);
+
+        $this->reset('message');
+        $this->group->load(['messages.user', 'files.knowledgeFile', 'members' => function ($query) {
+            $query->withPivot('role');
+        }]);
+
+        // Generate AI response
+        $this->generateAIResponse($userMessage);
+    }
+
+    protected function generateAIResponse(GroupMessage $userMessage): void
+    {
+        \Log::info('GroupChat: generateAIResponse started', [
+            'user_message_id' => $userMessage->id,
+            'question' => $userMessage->message,
+        ]);
+
+        try {
+            $chatService = app(ChatService::class);
+
+            // Get file IDs from this group
+            $fileIds = $this->group->files->pluck('knowledge_file_id')->toArray();
+
+            \Log::info('GroupChat: Files collected', [
+                'file_count' => count($fileIds),
+                'file_ids' => $fileIds,
+            ]);
+
+            if (empty($fileIds)) {
+                $aiResponse = "I don't have any files to reference yet. Please upload some learning materials to the group first.";
+                \Log::info('GroupChat: No files found, using default message');
+            } else {
+                // Use business_id from first file's business
+                $businessId = $this->group->files->first()->knowledgeFile->business_id ?? Auth::user()->business_id;
+
+                \Log::info('GroupChat: Calling ChatService', [
+                    'business_id' => $businessId,
+                    'question' => $userMessage->message,
+                ]);
+
+                $aiResponse = $chatService->getAnswer($userMessage->message, $businessId);
+
+                \Log::info('GroupChat: AI response received', [
+                    'response_length' => strlen($aiResponse),
+                    'response_preview' => substr($aiResponse, 0, 100),
+                ]);
+            }
+
+            $aiMessage = GroupMessage::create([
+                'group_id' => $this->group->id,
+                'user_id' => null,
+                'message' => $aiResponse,
+                'is_ai_response' => true,
+                'parent_message_id' => $userMessage->id,
+            ]);
+
+            \Log::info('GroupChat: AI message saved to database', [
+                'ai_message_id' => $aiMessage->id,
+                'message_content' => $aiMessage->message,
+            ]);
+
+            $this->group->load(['messages.user', 'files.knowledgeFile', 'members' => function ($query) {
+                $query->withPivot('role');
+            }]);
+
+            \Log::info('GroupChat: Group refreshed, total messages', [
+                'message_count' => $this->group->messages->count(),
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('GroupChat: Exception in generateAIResponse', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            session()->flash('error', 'Failed to generate AI response: '.$e->getMessage());
+        }
+    }
+
+    public function uploadFileToGroup(): void
+    {
+        $this->validate([
+            'uploadFile' => 'required|file|mimes:pdf,txt,docx|max:10240',
+        ]);
+
+        $path = $this->uploadFile->store('knowledge_files');
+
+        $knowledgeFile = Auth::user()->business->knowledgeFiles()->create([
+            'original_name' => $this->uploadFile->getClientOriginalName(),
+            'storage_path' => $path,
+            'status' => 'pending',
+        ]);
+
+        GroupFile::create([
+            'group_id' => $this->group->id,
+            'knowledge_file_id' => $knowledgeFile->id,
+            'uploaded_by' => Auth::id(),
+        ]);
+
+        \App\Jobs\ProcessKnowledgeFile::dispatch($knowledgeFile);
+
+        $this->reset('uploadFile');
+        $this->group->load(['messages.user', 'files.knowledgeFile', 'members' => function ($query) {
+            $query->withPivot('role');
+        }]);
+        session()->flash('message', 'File uploaded and processing started!');
+    }
+
+    public function inviteMember(): void
+    {
+        $this->validate([
+            'inviteEmail' => 'required|email|exists:users,email',
+        ]);
+
+        $userToInvite = \App\Models\User::where('email', $this->inviteEmail)->first();
+
+        // Check if user is already a member
+        if ($this->group->members->contains($userToInvite->id)) {
+            session()->flash('error', 'This user is already a member of the group.');
+
+            return;
+        }
+
+        // Add user as member
+        \App\Models\GroupMember::create([
+            'group_id' => $this->group->id,
+            'user_id' => $userToInvite->id,
+            'role' => 'member',
+        ]);
+
+        $this->reset('inviteEmail');
+        $this->group->load(['members' => function ($query) {
+            $query->withPivot('role');
+        }]);
+        session()->flash('message', $userToInvite->name.' has been added to the group!');
+    }
+
+    public function removeMember(int $userId): void
+    {
+        // Only owner can remove members
+        $currentUserRole = $this->group->members()
+            ->where('user_id', Auth::id())
+            ->first()->pivot->role;
+
+        if ($currentUserRole !== 'owner' && $userId !== Auth::id()) {
+            session()->flash('error', 'Only the group owner can remove members.');
+
+            return;
+        }
+
+        // Can't remove the owner
+        $memberToRemove = $this->group->members()
+            ->where('user_id', $userId)
+            ->first();
+
+        if ($memberToRemove->pivot->role === 'owner') {
+            session()->flash('error', 'Cannot remove the group owner.');
+
+            return;
+        }
+
+        \App\Models\GroupMember::where('group_id', $this->group->id)
+            ->where('user_id', $userId)
+            ->delete();
+
+        $this->group->load(['members' => function ($query) {
+            $query->withPivot('role');
+        }]);
+        session()->flash('message', 'Member removed from the group.');
+    }
+
+    public function render()
+    {
+        return view('livewire.groups.group-chat')->layout('layouts.app');
+    }
+}
