@@ -5,6 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Pricing - {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
+    <style>
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(245, 48, 3, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(245, 48, 3, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(245, 48, 3, 0);
+            }
+        }
+        
+        @keyframes badge-bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        .btn-shimmer {
+            position: relative;
+            background-size: 200% 100%;
+        }
+        
+        .btn-shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+            z-index: 1;
+        }
+        
+        .btn-shimmer:hover::before {
+            left: 100%;
+            animation: shimmer 0.75s ease-in-out;
+        }
+        
+        .btn-shimmer:active {
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .pulse-ring-animation {
+            animation: pulse-ring 2s infinite;
+        }
+        
+        .badge-bounce {
+            animation: badge-bounce 2s ease-in-out infinite;
+        }
+        
+        /* Enhanced button 3D effect */
+        button[type="submit"]:not(:disabled),
+        a[href] {
+            box-shadow: 
+                0 4px 6px -1px rgba(245, 48, 3, 0.3),
+                0 2px 4px -1px rgba(245, 48, 3, 0.2),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        button[type="submit"]:not(:disabled):hover,
+        a[href]:hover {
+            box-shadow: 
+                0 20px 25px -5px rgba(245, 48, 3, 0.4),
+                0 10px 10px -5px rgba(245, 48, 3, 0.3),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
 <body class="min-h-screen bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC]">
     @include('layouts.navigation')
@@ -27,8 +122,21 @@
                                 border-[#e3e3e0] dark:border-[#2a2a2a] dark:bg-[#141414] hover:border-[#F53003]
                             @endif">
 
+                    {{-- Recommended Badge --}}
+                    @if($isRecommended)
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 badge-bounce">
+                            <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold 
+                                         bg-gradient-to-r from-[#F53003] to-[#ff4422] text-white shadow-lg shadow-[#F53003]/30">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                Most Popular
+                            </span>
+                        </div>
+                    @endif
+
                     {{-- Plan Name --}}
-                    <h2 class="text-2xl font-bold mb-4">{{ $plan->name }}</h2>
+                    <h2 class="text-2xl font-bold mb-4 @if($isRecommended) mt-2 @endif">{{ $plan->name }}</h2>
 
                     {{-- Price --}}
                     <div class="mb-6">
@@ -62,12 +170,25 @@
                                 <form method="GET" action="{{ route('checkout.create') }}" class="w-full">
                                     <input type="hidden" name="plan_id" value="{{ $plan->id }}">
                                     <button type="submit" 
-                                        class="w-full px-6 py-3.5 rounded-xl font-semibold text-white 
-                                               bg-red-600 hover:bg-red-700 
-                                               transition-all duration-200 
-                                               hover:scale-105 hover:shadow-lg hover:shadow-[#F53003]/30
-                                               focus:outline-none focus:ring-2 focus:ring-[#F53003] focus:ring-offset-2">
-                                        Buy {{ $plan->name }}
+                                        class="btn-shimmer group relative w-full px-6 py-4 rounded-xl font-bold text-base text-white 
+                                               bg-gradient-to-br from-[#F53003] via-[#ff3311] to-[#ff4422] 
+                                               hover:from-[#ff4422] hover:via-[#ff3311] hover:to-[#F53003]
+                                               shadow-lg shadow-[#F53003]/30
+                                               transition-all duration-300 ease-in-out
+                                               hover:scale-105 hover:shadow-2xl hover:shadow-[#F53003]/50
+                                               active:scale-95
+                                               focus:outline-none focus:ring-4 focus:ring-[#F53003]/50
+                                               transform
+                                               overflow-hidden">
+                                        <span class="relative z-10 flex items-center justify-center gap-2">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                            </svg>
+                                            Buy {{ $plan->name }}
+                                        </span>
+                                        <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 
+                                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                                                    transform -skew-x-12"></div>
                                     </button>
                                 </form>
                             @else
@@ -77,16 +198,39 @@
                                     <input type="hidden" name="plan_id" value="{{ $plan->id }}">
                                     <button type="submit"
                                             @if($isCurrentPlan) disabled @endif
-                                            class="w-full px-6 py-3.5 rounded-xl font-semibold text-white 
-                                                   bg-red-600 hover:bg-red-700 
-                                                   transition-all duration-200 
-                                                   hover:scale-105 hover:shadow-lg hover:shadow-[#F53003]/30
-                                                   focus:outline-none focus:ring-2 focus:ring-[#F53003] focus:ring-offset-2
-                                                   disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600 disabled:hover:shadow-none">
-                                        @if($isCurrentPlan)
-                                            Current plan
-                                        @else
-                                            Choose {{ $plan->name }}
+                                            class="btn-shimmer group relative w-full px-6 py-4 rounded-xl font-bold text-base text-white 
+                                                   @if($isCurrentPlan)
+                                                       bg-gradient-to-br from-gray-500 to-gray-600
+                                                       shadow-md cursor-not-allowed opacity-70
+                                                   @else
+                                                       bg-gradient-to-br from-[#F53003] via-[#ff3311] to-[#ff4422]
+                                                       hover:from-[#ff4422] hover:via-[#ff3311] hover:to-[#F53003]
+                                                       shadow-lg shadow-[#F53003]/30
+                                                       hover:scale-105 hover:shadow-2xl hover:shadow-[#F53003]/50
+                                                       active:scale-95
+                                                       focus:ring-4 focus:ring-[#F53003]/50
+                                                       transform
+                                                   @endif
+                                                   transition-all duration-300 ease-in-out
+                                                   focus:outline-none
+                                                   overflow-hidden">
+                                        <span class="relative z-10 flex items-center justify-center gap-2">
+                                            @if($isCurrentPlan)
+                                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Current Plan
+                                            @else
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                Choose {{ $plan->name }}
+                                            @endif
+                                        </span>
+                                        @if(!$isCurrentPlan)
+                                            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 
+                                                        opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                                                        transform -skew-x-12"></div>
                                         @endif
                                     </button>
                                 </form>
@@ -94,12 +238,25 @@
                         @else
                             {{-- Not Logged In --}}
                             <a href="{{ route('login') }}" 
-                               class="w-full inline-flex items-center justify-center px-6 py-3.5 rounded-xl font-semibold text-white 
-                                      bg-[#F53003] hover:bg-[#ff4422] 
-                                      transition-all duration-200 
-                                      hover:scale-105 hover:shadow-lg hover:shadow-[#F53003]/30
-                                      focus:outline-none focus:ring-2 focus:ring-[#F53003] focus:ring-offset-2">
-                                Sign in to choose
+                               class="btn-shimmer group relative w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-bold text-base text-white 
+                                      bg-gradient-to-br from-[#F53003] via-[#ff3311] to-[#ff4422] 
+                                      hover:from-[#ff4422] hover:via-[#ff3311] hover:to-[#F53003]
+                                      shadow-lg shadow-[#F53003]/30
+                                      transition-all duration-300 ease-in-out
+                                      hover:scale-105 hover:shadow-2xl hover:shadow-[#F53003]/50
+                                      active:scale-95
+                                      focus:outline-none focus:ring-4 focus:ring-[#F53003]/50
+                                      transform
+                                      overflow-hidden">
+                                <span class="relative z-10 flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                                    </svg>
+                                    Sign in to choose
+                                </span>
+                                <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 
+                                            opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                                            transform -skew-x-12"></div>
                             </a>
                         @endauth
                     </div>
@@ -107,5 +264,7 @@
             @endforeach
         </div>
     </div>
+    
+    @livewireScripts
 </body>
 </html>
