@@ -7,6 +7,7 @@ use App\Models\GroupFile;
 use App\Models\GroupMessage;
 use App\Services\ChatService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -66,8 +67,38 @@ class GroupChat extends Component
             $query->withPivot('role');
         }]);
 
-        // Generate AI response
-        $this->generateAIResponse($userMessage);
+        // Generate AI response only if AI is tagged
+        if ($this->shouldGenerateAIResponse($userMessage->message)) {
+            $this->generateAIResponse($userMessage);
+        }
+    }
+
+    /**
+     * Check if AI should respond to this message
+     */
+    protected function shouldGenerateAIResponse(string $message): bool
+    {
+        // Convert to lowercase for case-insensitive matching
+        $message = strtolower($message);
+        
+        // List of AI trigger patterns
+        $aiTriggers = [
+            '@ai',
+            '@assistant', 
+            '@bot',
+            'hey ai',
+            'ai,',
+            'assistant,',
+        ];
+        
+        // Check if any trigger pattern is found
+        foreach ($aiTriggers as $trigger) {
+            if (str_contains($message, $trigger)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     protected function generateAIResponse(GroupMessage $userMessage): void
@@ -147,6 +178,32 @@ class GroupChat extends Component
             'uploadFile' => 'required|file|mimes:pdf,txt,docx|max:10240',
         ]);
 
+        // Check if group already has a file
+        $existingFile = $this->group->files()->first();
+        
+        if ($existingFile) {
+            // Remove the existing file and its knowledge base
+            $oldKnowledgeFile = $existingFile->knowledgeFile;
+            
+            // Delete the old file from storage
+            if ($oldKnowledgeFile && \Storage::exists($oldKnowledgeFile->storage_path)) {
+                \Storage::delete($oldKnowledgeFile->storage_path);
+            }
+            
+            // Delete text chunks associated with the old file
+            if ($oldKnowledgeFile) {
+                $oldKnowledgeFile->textChunks()->delete();
+                $oldKnowledgeFile->delete();
+            }
+            
+            // Delete the group file relationship
+            $existingFile->delete();
+            
+            session()->flash('message', 'Previous file replaced with new upload!');
+        } else {
+            session()->flash('message', 'File uploaded and processing started!');
+        }
+
         $path = $this->uploadFile->store('knowledge_files');
 
         $knowledgeFile = Auth::user()->business->knowledgeFiles()->create([
@@ -167,7 +224,6 @@ class GroupChat extends Component
         $this->group->load(['messages.user', 'files.knowledgeFile', 'members' => function ($query) {
             $query->withPivot('role');
         }]);
-        session()->flash('message', 'File uploaded and processing started!');
     }
 
     public function inviteMember(): void

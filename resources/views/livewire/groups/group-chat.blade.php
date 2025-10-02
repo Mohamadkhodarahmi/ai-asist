@@ -202,6 +202,16 @@
                     @endforelse
                 </div>
 
+                {{-- AI Info --}}
+                <div class="px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-t border-[#e3e3e0] dark:border-[#3E3E3A]">
+                    <div class="flex items-center gap-2 text-xs text-blue-700 dark:text-blue-300">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>AI responds only when tagged: <strong>@ai</strong>, <strong>@assistant</strong>, or <strong>hey ai</strong></span>
+                    </div>
+                </div>
+
                 {{-- Input Area --}}
                 <div class="p-4 bg-white dark:bg-[#161615] border-t border-[#e3e3e0] dark:border-[#3E3E3A]">
                     <form wire:submit.prevent="sendMessage" class="flex gap-3">
@@ -213,7 +223,7 @@
                                        bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] 
                                        focus:outline-none focus:ring-2 focus:ring-[#F53003] focus:border-transparent
                                        resize-none transition-all duration-200 placeholder:text-[#706f6c]"
-                                placeholder="Type your message or ask AI a question..."
+                                placeholder="Type your message... (Use @ai to get AI responses)"
                                 x-data="{ resize: () => { $el.style.height = '44px'; $el.style.height = $el.scrollHeight + 'px' } }"
                                 x-init="resize()"
                                 @input="resize()"
@@ -324,7 +334,8 @@
                         <svg class="w-5 h-5 text-[#F53003]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                         </svg>
-                        Learning Materials
+                        Knowledge Base
+                        <span class="text-xs bg-[#F53003]/10 text-[#F53003] px-2 py-1 rounded-full font-medium">One File Only</span>
                     </h3>
                     
                     {{-- Upload Form --}}
@@ -346,7 +357,13 @@
                             class="mt-2 w-full py-2 px-3 bg-gradient-to-r from-[#F53003] to-[#ff4422] text-white rounded-lg 
                                    text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
                             wire:loading.attr="disabled">
-                            <span wire:loading.remove>Upload File</span>
+                            <span wire:loading.remove>
+                                @if($group->files->count() > 0)
+                                    Replace Knowledge Base
+                                @else
+                                    Upload Knowledge Base
+                                @endif
+                            </span>
                             <span wire:loading>Uploading...</span>
                         </button>
                     </form>
