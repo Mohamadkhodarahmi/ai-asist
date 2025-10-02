@@ -362,7 +362,7 @@
                                                             Cancel
                                                         </button>
                                                         <button @click="$wire.removeMember({{ $member->id }}); showConfirm = false" 
-                                                                class="flex-1 px-4 py-2 text-sm font-medium text-red-600 bg-orange-600 
+                                                                class="flex-1 px-4 py-2 text-sm font-medium text-white bg-orange-600 
                                                                        rounded-lg hover:bg-orange-700 transition-colors">
                                                             Leave Group
                                                         </button>

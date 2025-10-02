@@ -70,11 +70,13 @@
         }
         
         .gradient-bg {
-            background: linear-gradient(135deg, #FDFDFC 0%, #f8f7f4 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
         }
         
         .dark .gradient-bg {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            background-attachment: fixed;
         }
         
         .form-input {
