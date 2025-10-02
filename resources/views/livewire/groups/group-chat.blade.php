@@ -463,21 +463,41 @@
             
             console.log('🎧 Listening to group.' + groupId + ' channel...');
             
-            window.Echo.private(`group.${groupId}`)
+            const channel = window.Echo.private(`group.${groupId}`)
+                .subscribed(() => {
+                    console.log('✅ Successfully subscribed to group.' + groupId);
+                })
                 .listen('GroupMessageSent', (event) => {
-                    console.log('📨 New message received:', event);
-                    
-                    // Refresh the Livewire component to show new message
-                    if (typeof Livewire !== 'undefined') {
-                        Livewire.dispatch('refreshMessages');
-                    }
-                    
-                    // Alternative: Append message directly to DOM
+                    console.log('📨 New message received (no prefix):', event);
+                    appendMessageToUI(event, currentUserId);
+                })
+                .listen('.GroupMessageSent', (event) => {
+                    console.log('📨 New message received (dot prefix):', event);
                     appendMessageToUI(event, currentUserId);
                 })
                 .error((error) => {
-                    console.error('❌ Echo error:', error);
+                    console.error('❌ Echo subscription error:', error);
                 });
+            
+            // Listen to ALL events on this channel for debugging
+            setTimeout(() => {
+                if (window.Echo && window.Echo.connector && window.Echo.connector.pusher) {
+                    const pusherChannel = window.Echo.connector.pusher.channels.channels['private-group.' + groupId];
+                    if (pusherChannel) {
+                        console.log('✅ Binding global listener to channel');
+                        pusherChannel.bind_global((eventName, data) => {
+                            console.log('🔔 ANY event received:', eventName, data);
+                            if (eventName.includes('GroupMessageSent') || eventName.includes('TestEvent')) {
+                                appendMessageToUI(data, currentUserId);
+                            }
+                        });
+                    } else {
+                        console.error('❌ Could not find pusher channel');
+                    }
+                } else {
+                    console.error('❌ Echo or Pusher not available');
+                }
+            }, 1000);
         }
         
         function appendMessageToUI(event, currentUserId) {

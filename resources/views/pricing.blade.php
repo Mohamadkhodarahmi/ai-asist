@@ -130,12 +130,12 @@
                 
                 {{-- Card Wrapper with extra space for badge --}}
                 <div class="@if($isRecommended) pt-6 @endif">
-                    <div class="relative rounded-2xl p-8 flex flex-col border transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl
-                                @if($isRecommended)
-                                    border-[#F53003] shadow-xl shadow-[#F53003]/20 dark:bg-[#1a1a1a] lg:scale-105
-                                @else
-                                    border-[#e3e3e0] dark:border-[#2a2a2a] dark:bg-[#141414] hover:border-[#F53003]
-                                @endif">
+                <div class="relative rounded-2xl p-8 flex flex-col border transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl
+                            @if($isRecommended)
+                                border-[#F53003] shadow-xl shadow-[#F53003]/20 dark:bg-[#1a1a1a] lg:scale-105
+                            @else
+                                border-[#e3e3e0] dark:border-[#2a2a2a] dark:bg-[#141414] hover:border-[#F53003]
+                            @endif">
 
                         {{-- Recommended Badge --}}
                         @if($isRecommended)
@@ -162,8 +162,8 @@
                             </div>
                         @endif
 
-                        {{-- Plan Name --}}
-                        <h2 class="text-2xl font-bold mb-4">{{ $plan->name }}</h2>
+                    {{-- Plan Name --}}
+                    <h2 class="text-2xl font-bold mb-4">{{ $plan->name }}</h2>
 
                     {{-- Price --}}
                     <div class="mb-6">
@@ -211,7 +211,7 @@
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                                             </svg>
-                                            Buy {{ $plan->name }}
+                                        Buy {{ $plan->name }}
                                         </span>
                                         <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 
                                                     opacity-0 group-hover:opacity-100 transition-opacity duration-300
@@ -242,16 +242,16 @@
                                                    focus:outline-none
                                                    overflow-hidden">
                                         <span class="relative z-10 flex items-center justify-center gap-2">
-                                            @if($isCurrentPlan)
+                                        @if($isCurrentPlan)
                                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                                 </svg>
                                                 Current Plan
-                                            @else
+                                        @else
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                 </svg>
-                                                Choose {{ $plan->name }}
+                                            Choose {{ $plan->name }}
                                             @endif
                                         </span>
                                         @if(!$isCurrentPlan)
@@ -279,7 +279,7 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                                     </svg>
-                                    Sign in to choose
+                                Sign in to choose
                                 </span>
                                 <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 
                                             opacity-0 group-hover:opacity-100 transition-opacity duration-300
@@ -287,7 +287,7 @@
                             </a>
                         @endauth
                     </div>
-                </div>
+                    </div>
                 </div>
             @endforeach
         </div>

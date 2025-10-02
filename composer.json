@@ -16,6 +16,7 @@
         "laravel/sanctum": "^4.2",
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6",
+        "pusher/pusher-php-server": "^7.2",
         "spatie/pdf-to-text": "^1.54"
     },
     "require-dev": {

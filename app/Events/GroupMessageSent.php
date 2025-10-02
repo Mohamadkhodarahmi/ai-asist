@@ -6,6 +6,7 @@ use App\Models\GroupMessage;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -31,6 +32,14 @@ class GroupMessageSent implements ShouldBroadcast
         return [
             new PrivateChannel('group.'.$this->message->group_id),
         ];
+    }
+
+    /**
+     * The event's broadcast name.
+     */
+    public function broadcastAs(): string
+    {
+        return 'GroupMessageSent';
     }
 
     /**
