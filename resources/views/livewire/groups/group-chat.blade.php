@@ -54,6 +54,11 @@
         background-color: #F53003 !important;
         color: #ffffff !important;
     }
+    
+    /* Alpine.js cloak */
+    [x-cloak] {
+        display: none !important;
+    }
 </style>
 @endpush
 
@@ -68,7 +73,7 @@
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                     </svg>
-                    {{ session('message') }}
+                {{ session('message') }}
                 </div>
             </div>
         @endif
@@ -80,7 +85,7 @@
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                     </svg>
-                    {{ session('error') }}
+                {{ session('error') }}
                 </div>
             </div>
         @endif
@@ -99,7 +104,7 @@
                                 {{ strtoupper(substr($group->name, 0, 1)) }}
                             </div>
                             <div>
-                                <h2 class="text-xl font-bold text-[#1b1b18] dark:text-[#EDEDEC]">{{ $group->name }}</h2>
+                        <h2 class="text-xl font-bold text-[#1b1b18] dark:text-[#EDEDEC]">{{ $group->name }}</h2>
                                 <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] flex items-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
@@ -127,7 +132,7 @@
                              id="message-{{ $msg->id }}">
                             <div class="max-w-[75%] md:max-w-[60%]">
                                 {{-- Sender Name --}}
-                                @if ($msg->is_ai_response)
+                                    @if ($msg->is_ai_response)
                                     <div class="flex items-center gap-2 mb-2 ml-1">
                                         <div class="w-6 h-6 bg-gradient-to-br from-[#F53003] to-[#ff4422] rounded-lg flex items-center justify-center">
                                             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -181,12 +186,12 @@
                                             <svg class="w-4 h-4 text-[#F53003] dark:text-[#FF4433]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                             </svg>
-                                        @endif
+                                    @endif
                                     </div>
                                 </div>
+                                </div>
                             </div>
-                        </div>
-                    @empty
+                        @empty
                         <div class="flex flex-col items-center justify-center h-full text-center py-12">
                             <div class="w-20 h-20 bg-gradient-to-br from-[#F53003]/10 to-[#ff4422]/20 rounded-2xl 
                                         flex items-center justify-center mb-4">
@@ -198,9 +203,9 @@
                             <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] max-w-md">
                                 Start the conversation by sending a message or asking the AI assistant a question about your learning materials.
                             </p>
-                        </div>
-                    @endforelse
-                </div>
+                            </div>
+                        @endforelse
+                    </div>
 
                 {{-- AI Info --}}
                 <div class="px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-t border-[#e3e3e0] dark:border-[#3E3E3A]">
@@ -273,25 +278,36 @@
                         Members ({{ $group->members->count() }})
                     </h3>
                     
-                    {{-- Invite Form --}}
+                    {{-- Invite Form (Owner Only) --}}
+                    @if($this->isOwner)
                     <form wire:submit.prevent="inviteMember" class="mb-4">
-                        <input 
-                            type="email" 
-                            wire:model.defer="inviteEmail" 
-                            placeholder="Enter user email..." 
-                            class="w-full text-sm px-3 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-lg 
-                                   bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] 
-                                   focus:outline-none focus:ring-2 focus:ring-[#F53003] focus:border-transparent">
-                        @error('inviteEmail') 
-                            <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> 
-                        @enderror
-                        <button 
-                            type="submit" 
-                            class="mt-2 w-full py-2 px-3 bg-gradient-to-r from-[#F53003] to-[#ff4422] text-white rounded-lg 
-                                   text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
-                            + Invite Member
-                        </button>
+                            <input 
+                                type="email" 
+                                wire:model.defer="inviteEmail" 
+                                placeholder="Enter user email..." 
+                                class="w-full text-sm px-3 py-2 border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-lg 
+                                       bg-white dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] 
+                                       focus:outline-none focus:ring-2 focus:ring-[#F53003] focus:border-transparent">
+                            @error('inviteEmail') 
+                                <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> 
+                            @enderror
+                            <button 
+                                type="submit" 
+                                class="mt-2 w-full py-2 px-3 bg-gradient-to-r from-[#F53003] to-[#ff4422] text-white rounded-lg 
+                                       text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
+                                + Invite Member
+                            </button>
                     </form>
+                    @else
+                        <div class="mb-4 p-3 bg-gray-50 dark:bg-[#1a1a1a] rounded-lg border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                            <p class="text-xs text-gray-600 dark:text-gray-400 text-center">
+                                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                                </svg>
+                                Only the group owner can invite members
+                            </p>
+                        </div>
+                    @endif
 
                     {{-- Members List --}}
                     <div class="space-y-2 max-h-64 overflow-y-auto">
@@ -303,24 +319,103 @@
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-[#1b1b18] dark:text-[#EDEDEC] truncate">{{ $member->name }}</p>
-                                    @if ($member->pivot && $member->pivot->role === 'owner')
+                                @if ($member->pivot && $member->pivot->role === 'owner')
                                         <span class="text-xs text-[#F53003] dark:text-[#FF4433]">Owner</span>
                                     @endif
                                 </div>
                                 @if ($member->pivot && $member->pivot->role !== 'owner')
-                                    @php
-                                        $currentUserMember = $group->members->where('id', Auth::id())->first();
-                                        $isOwner = $currentUserMember && $currentUserMember->pivot && $currentUserMember->pivot->role === 'owner';
-                                    @endphp
-                                    @if ($isOwner || $member->id === Auth::id())
-                                        <button 
-                                            wire:click="removeMember({{ $member->id }})" 
-                                            class="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                            title="Remove member">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                            </svg>
+                                    @if ($member->id === Auth::id())
+                                        {{-- Leave Group Button for Current User --}}
+                                        <div x-data="{ showConfirm: false }">
+                                            <button 
+                                                @click="showConfirm = true"
+                                                class="px-3 py-1.5 text-xs font-medium text-orange-600 hover:text-white hover:bg-orange-600 
+                                                       border border-orange-600 rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-md"
+                                                title="Leave group">
+                                                <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                                </svg>
+                                                Leave
+                                            </button>
+                                            
+                                            {{-- Confirmation Dialog --}}
+                                            <div x-show="showConfirm" x-cloak 
+                                                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                                                 @click.self="showConfirm = false">
+                                                <div class="bg-white dark:bg-[#161615] rounded-2xl p-6 max-w-sm mx-4 shadow-2xl border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                                                    <div class="flex items-center gap-3 mb-4">
+                                                        <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center">
+                                                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                                                            </svg>
+                                                        </div>
+                                                        <h3 class="text-lg font-semibold text-[#1b1b18] dark:text-[#EDEDEC]">Leave Group</h3>
+                                                    </div>
+                                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                                                        Are you sure you want to leave this group? You won't be able to see messages or rejoin unless invited again.
+                                                    </p>
+                                                    <div class="flex gap-3">
+                                                        <button @click="showConfirm = false" 
+                                                                class="flex-1 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 
+                                                                       bg-gray-100 dark:bg-[#1a1a1a] rounded-lg hover:bg-gray-200 dark:hover:bg-[#2a2a2a] 
+                                                                       transition-colors">
+                                                            Cancel
+                                                        </button>
+                                                        <button @click="$wire.removeMember({{ $member->id }}); showConfirm = false" 
+                                                                class="flex-1 px-4 py-2 text-sm font-medium text-red-600 bg-orange-600 
+                                                                       rounded-lg hover:bg-orange-700 transition-colors">
+                                                            Leave Group
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif ($this->isOwner)
+                                        {{-- Remove Member Button for Owner --}}
+                                        <div x-data="{ showConfirm: false }">
+                                            <button 
+                                                @click="showConfirm = true"
+                                                class="px-3 py-1.5 text-xs font-medium text-red-600 hover:text-white hover:bg-red-600 
+                                                       border border-red-600 rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-md"
+                                                title="Remove member">
+                                                <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                </svg>
+                                                Remove
+                                            </button>
+                                            
+                                            {{-- Confirmation Dialog --}}
+                                            <div x-show="showConfirm" x-cloak 
+                                                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                                                 @click.self="showConfirm = false">
+                                                <div class="bg-white dark:bg-[#161615] rounded-2xl p-6 max-w-sm mx-4 shadow-2xl border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                                                    <div class="flex items-center gap-3 mb-4">
+                                                        <div class="w-10 h-10 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                                                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                                                            </svg>
+                                                        </div>
+                                                        <h3 class="text-lg font-semibold text-[#1b1b18] dark:text-[#EDEDEC]">Remove Member</h3>
+                                                    </div>
+                                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                                                        Are you sure you want to remove <strong>{{ $member->name }}</strong> from this group? They will lose access to all messages and files.
+                                                    </p>
+                                                    <div class="flex gap-3">
+                                                        <button @click="showConfirm = false" 
+                                                                class="flex-1 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 
+                                                                       bg-gray-100 dark:bg-[#1a1a1a] rounded-lg hover:bg-gray-200 dark:hover:bg-[#2a2a2a] 
+                                                                       transition-colors">
+                                                            Cancel
+                                                        </button>
+                                                        <button @click="$wire.removeMember({{ $member->id }}); showConfirm = false" 
+                                                                class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 
+                                                                       rounded-lg hover:bg-red-700 transition-colors">
+                                                            Remove Member
                                         </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endif
                                 @endif
                             </div>
@@ -338,35 +433,46 @@
                         <span class="text-xs bg-[#F53003]/10 text-[#F53003] px-2 py-1 rounded-full font-medium">One File Only</span>
                     </h3>
                     
-                    {{-- Upload Form --}}
+                    {{-- Upload Form (Owner Only) --}}
+                    @if($this->isOwner)
                     <form wire:submit.prevent="uploadFileToGroup" class="mb-4">
-                        <input 
-                            type="file" 
-                            wire:model="uploadFile" 
-                            class="w-full text-xs text-gray-500 
-                                   file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 
-                                   file:text-sm file:font-semibold 
-                                   file:bg-[#F53003]/10 file:text-[#F53003] 
-                                   hover:file:bg-[#F53003]/20 file:cursor-pointer
-                                   dark:file:bg-[#FF4433]/10 dark:file:text-[#FF4433]">
-                        @error('uploadFile') 
-                            <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> 
-                        @enderror
-                        <button 
-                            type="submit" 
-                            class="mt-2 w-full py-2 px-3 bg-gradient-to-r from-[#F53003] to-[#ff4422] text-white rounded-lg 
-                                   text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-                            wire:loading.attr="disabled">
-                            <span wire:loading.remove>
-                                @if($group->files->count() > 0)
-                                    Replace Knowledge Base
-                                @else
-                                    Upload Knowledge Base
-                                @endif
-                            </span>
-                            <span wire:loading>Uploading...</span>
-                        </button>
+                            <input 
+                                type="file" 
+                                wire:model="uploadFile" 
+                                class="w-full text-xs text-gray-500 
+                                       file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 
+                                       file:text-sm file:font-semibold 
+                                       file:bg-[#F53003]/10 file:text-[#F53003] 
+                                       hover:file:bg-[#F53003]/20 file:cursor-pointer
+                                       dark:file:bg-[#FF4433]/10 dark:file:text-[#FF4433]">
+                            @error('uploadFile') 
+                                <span class="text-xs text-red-600 dark:text-red-400 mt-1 block">{{ $message }}</span> 
+                            @enderror
+                            <button 
+                                type="submit" 
+                                class="mt-2 w-full py-2 px-3 bg-gradient-to-r from-[#F53003] to-[#ff4422] text-white rounded-lg 
+                                       text-sm font-semibold shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                                wire:loading.attr="disabled">
+                                <span wire:loading.remove>
+                                    @if($group->files->count() > 0)
+                                        Replace Knowledge Base
+                                    @else
+                                        Upload Knowledge Base
+                                    @endif
+                                </span>
+                                <span wire:loading>Uploading...</span>
+                            </button>
                     </form>
+                    @else
+                        <div class="mb-4 p-3 bg-gray-50 dark:bg-[#1a1a1a] rounded-lg border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                            <p class="text-xs text-gray-600 dark:text-gray-400 text-center">
+                                <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 616 0z" clip-rule="evenodd"/>
+                                </svg>
+                                Only the group owner can upload files
+                            </p>
+                        </div>
+                    @endif
 
                     {{-- Files List --}}
                     <div class="space-y-2 max-h-64 overflow-y-auto">

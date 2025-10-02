@@ -172,8 +172,30 @@ class GroupChat extends Component
         }
     }
 
+    /**
+     * Check if the current user is the group owner
+     */
+    protected function isGroupOwner(): bool
+    {
+        return $this->group->owner_id === Auth::id();
+    }
+
+    /**
+     * Computed property for view access
+     */
+    public function getIsOwnerProperty(): bool
+    {
+        return $this->isGroupOwner();
+    }
+
     public function uploadFileToGroup(): void
     {
+        // Only group owner can upload files
+        if (!$this->isGroupOwner()) {
+            session()->flash('error', 'Only the group owner can upload files.');
+            return;
+        }
+
         $this->validate([
             'uploadFile' => 'required|file|mimes:pdf,txt,docx|max:10240',
         ]);
@@ -228,6 +250,12 @@ class GroupChat extends Component
 
     public function inviteMember(): void
     {
+        // Only group owner can invite members
+        if (!$this->isGroupOwner()) {
+            session()->flash('error', 'Only the group owner can invite members.');
+            return;
+        }
+
         $this->validate([
             'inviteEmail' => 'required|email|exists:users,email',
         ]);
@@ -279,6 +307,10 @@ class GroupChat extends Component
             return;
         }
 
+        // Get member name for better feedback
+        $memberName = $memberToRemove->name;
+        $isCurrentUser = $userId === Auth::id();
+
         \App\Models\GroupMember::where('group_id', $this->group->id)
             ->where('user_id', $userId)
             ->delete();
@@ -286,7 +318,15 @@ class GroupChat extends Component
         $this->group->load(['members' => function ($query) {
             $query->withPivot('role');
         }]);
-        session()->flash('message', 'Member removed from the group.');
+
+        // Different messages for leaving vs being removed
+        if ($isCurrentUser) {
+            session()->flash('message', 'You have left the group successfully.');
+            // Redirect to groups list after leaving
+            $this->redirect('/groups');
+        } else {
+            session()->flash('message', $memberName . ' has been removed from the group.');
+        }
     }
 
     public function render()
