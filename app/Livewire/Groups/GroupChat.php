@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Groups;
 
+use App\Models\Business;
 use App\Models\Group;
 use App\Models\GroupFile;
 use App\Models\GroupMessage;
@@ -59,8 +60,10 @@ class GroupChat extends Component
             'message' => $userMessage->message,
         ]);
 
-        // Broadcast the message
-        broadcast(new \App\Events\GroupMessageSent($userMessage))->toOthers();
+        // Broadcast the message directly (immediate)
+        $broadcaster = app('Illuminate\Contracts\Broadcasting\Broadcaster');
+        $event = new \App\Events\GroupMessageSent($userMessage);
+        $broadcaster->broadcast($event->broadcastOn(), $event->broadcastAs(), $event->broadcastWith());
 
         $this->reset('message');
         $this->group->load(['messages.user', 'files.knowledgeFile', 'members' => function ($query) {
@@ -80,24 +83,24 @@ class GroupChat extends Component
     {
         // Convert to lowercase for case-insensitive matching
         $message = strtolower($message);
-        
+
         // List of AI trigger patterns
         $aiTriggers = [
             '@ai',
-            '@assistant', 
+            '@assistant',
             '@bot',
             'hey ai',
             'ai,',
             'assistant,',
         ];
-        
+
         // Check if any trigger pattern is found
         foreach ($aiTriggers as $trigger) {
             if (str_contains($message, $trigger)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -152,8 +155,10 @@ class GroupChat extends Component
                 'message_content' => $aiMessage->message,
             ]);
 
-            // Broadcast the AI response
-            broadcast(new \App\Events\GroupMessageSent($aiMessage));
+            // Broadcast the AI response directly (immediate)
+            $broadcaster = app('Illuminate\Contracts\Broadcasting\Broadcaster');
+            $event = new \App\Events\GroupMessageSent($aiMessage);
+            $broadcaster->broadcast($event->broadcastOn(), $event->broadcastAs(), $event->broadcastWith());
 
             $this->group->load(['messages.user', 'files.knowledgeFile', 'members' => function ($query) {
                 $query->withPivot('role');
@@ -191,9 +196,21 @@ class GroupChat extends Component
     public function uploadFileToGroup(): void
     {
         // Only group owner can upload files
-        if (!$this->isGroupOwner()) {
+        if (! $this->isGroupOwner()) {
             session()->flash('error', 'Only the group owner can upload files.');
+
             return;
+        }
+
+        // Ensure user has a business relationship (create one if needed)
+        $user = Auth::user();
+        if (! $user->business) {
+            $business = Business::create([
+                'name' => $user->name."'s Business",
+            ]);
+            $user->business_id = $business->id;
+            $user->save();
+            $user->refresh(); // Refresh the user to load the new business relationship
         }
 
         $this->validate([
@@ -202,25 +219,25 @@ class GroupChat extends Component
 
         // Check if group already has a file
         $existingFile = $this->group->files()->first();
-        
+
         if ($existingFile) {
             // Remove the existing file and its knowledge base
             $oldKnowledgeFile = $existingFile->knowledgeFile;
-            
+
             // Delete the old file from storage
             if ($oldKnowledgeFile && \Storage::exists($oldKnowledgeFile->storage_path)) {
                 \Storage::delete($oldKnowledgeFile->storage_path);
             }
-            
+
             // Delete text chunks associated with the old file
             if ($oldKnowledgeFile) {
                 $oldKnowledgeFile->textChunks()->delete();
                 $oldKnowledgeFile->delete();
             }
-            
+
             // Delete the group file relationship
             $existingFile->delete();
-            
+
             session()->flash('message', 'Previous file replaced with new upload!');
         } else {
             session()->flash('message', 'File uploaded and processing started!');
@@ -251,8 +268,9 @@ class GroupChat extends Component
     public function inviteMember(): void
     {
         // Only group owner can invite members
-        if (!$this->isGroupOwner()) {
+        if (! $this->isGroupOwner()) {
             session()->flash('error', 'Only the group owner can invite members.');
+
             return;
         }
 
@@ -325,7 +343,7 @@ class GroupChat extends Component
             // Redirect to groups list after leaving
             $this->redirect('/groups');
         } else {
-            session()->flash('message', $memberName . ' has been removed from the group.');
+            session()->flash('message', $memberName.' has been removed from the group.');
         }
     }
 

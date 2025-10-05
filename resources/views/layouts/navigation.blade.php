@@ -7,17 +7,32 @@
             <div class="flex items-center gap-3 group">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
                     <div class="relative">
-                        <svg class="w-10 h-10 text-[#F53003] dark:text-[#F61500] transition-all duration-300 group-hover:scale-110 group-hover:rotate-12" 
+                        <!-- AI Brain/Neural Network Logo -->
+                        <svg class="w-10 h-10 text-[#F53003] dark:text-[#F61500] transition-all duration-300 group-hover:scale-110" 
                              viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="24" cy="24" r="24" fill="currentColor" fill-opacity="0.1" 
+                            <!-- Outer glow circle -->
+                            <circle cx="24" cy="24" r="22" fill="currentColor" fill-opacity="0.1" 
                                     class="animate-pulse"/>
-                            <path d="M12 24L22 34L36 14" stroke="currentColor" stroke-width="3" 
-                                  stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Brain outline -->
+                            <path d="M16 18C16 14 18 12 24 12C30 12 32 14 32 18C32 20 31 22 30 24C31 26 32 28 32 30C32 34 30 36 24 36C18 36 16 34 16 30C16 28 17 26 18 24C17 22 16 20 16 18Z" 
+                                  stroke="currentColor" stroke-width="2" fill="none"/>
+                            <!-- Neural network nodes -->
+                            <circle cx="20" cy="20" r="2" fill="currentColor"/>
+                            <circle cx="28" cy="20" r="2" fill="currentColor"/>
+                            <circle cx="24" cy="26" r="2" fill="currentColor"/>
+                            <circle cx="20" cy="32" r="2" fill="currentColor"/>
+                            <circle cx="28" cy="32" r="2" fill="currentColor"/>
+                            <!-- Connection lines -->
+                            <path d="M20 20L24 26L28 20" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                            <path d="M20 20L20 32" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                            <path d="M28 20L28 32" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                            <path d="M24 26L20 32" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                            <path d="M24 26L28 32" stroke="currentColor" stroke-width="1.5" fill="none"/>
                         </svg>
                         <div class="absolute -inset-1 bg-gradient-to-r from-[#F53003] to-[#FF4433] rounded-full opacity-0 group-hover:opacity-20 blur transition-all duration-300"></div>
                     </div>
                     <span class="text-2xl font-bold bg-gradient-to-r from-[#1b1b18] to-[#706f6c] dark:from-[#EDEDEC] dark:to-[#A1A09A] bg-clip-text text-transparent">
-                        AI Assistant
+                        withasisstant
                     </span>
                 </a>
             </div>
@@ -52,7 +67,7 @@
                 </a>
 
                 <a href="{{ route('pricing') }}" 
-                   class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('pricing') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">
+                   class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('pricing') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : '' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M12 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm0-6v2m0 12v2M4 12h2m12 0h2"/>
@@ -79,14 +94,8 @@
                 </a>
             </div>
 
-            <!-- Right Side: Upload Button & User Menu -->
+            <!-- Right Side: User Menu -->
             <div class="hidden md:flex items-center gap-4">
-                @unless(request()->routeIs('upload'))
-                <a href="{{ route('upload') }}" 
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-gradient-to-r from-[#F53003] to-[#FF4433] hover:shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40">
-                    Upload
-                </a>
-                @endunless
 
                 <!-- User Menu Dropdown -->
                 <div class="relative" x-data="{ open: false }" @click.outside="open = false">
@@ -151,9 +160,6 @@
             <a href="{{ route('pricing') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('pricing') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">Pricing</a>
             <a href="{{ route('docs') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('docs') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">Docs</a>
             <a href="{{ route('community') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('community') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('community') ? 'page' : null }}">Community</a>
-            @unless(request()->routeIs('upload'))
-            <a href="{{ route('upload') }}" class="block px-4 py-3 rounded-lg font-semibold   hover:bg-[#c41e00] transition-all">Upload</a>
-            @endunless
             <div class="pt-4 mt-4 border-t border-[#e3e3e0] dark:border-[#3E3E3A]">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

@@ -35,9 +35,13 @@ class FileUpload extends Component
 
         // If user doesn't have a business, create one automatically
         if (! $this->business) {
-            $this->business = Auth::user()->business()->create([
-                'name' => Auth::user()->name."'s Business",
+            $user = Auth::user();
+            $business = Business::create([
+                'name' => $user->name."'s Business",
             ]);
+            $user->business_id = $business->id;
+            $user->save();
+            $this->business = $business;
         }
 
         $this->prompts = $this->business->knowledgeFiles->pluck('system_prompt', 'id')->toArray();
@@ -78,6 +82,18 @@ class FileUpload extends Component
         // Reset the component state.
         $this->reset('document');
         $this->business = Auth::user()->business()->with('knowledgeFiles')->first();
+
+        // Ensure business relationship is loaded properly
+        if (! $this->business) {
+            $user = Auth::user();
+            $business = Business::create([
+                'name' => $user->name."'s Business",
+            ]);
+            $user->business_id = $business->id;
+            $user->save();
+            $this->business = $business;
+        }
+
         $this->prompts = $this->business->knowledgeFiles->pluck('system_prompt', 'id')->toArray();
 
         // Send a success message to the UI.
