@@ -10,8 +10,7 @@ class PlanController extends Controller
 {
     public function index()
     {
-
-        $plans = Plan::all();
+        $plans = Plan::orderBy('price_cents')->get();
 
         return view('pricing', compact('plans'));
     }

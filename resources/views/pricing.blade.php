@@ -127,12 +127,25 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 class="text-4xl font-bold mb-12 text-center">Choose Your Plan</h1>
 
+        {{-- Annual/Monthly Toggle --}}
+        <div class="flex justify-center mb-12">
+            <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-1 flex">
+                <button id="monthly-toggle" class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm">
+                    Monthly
+                </button>
+                <button id="annual-toggle" class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                    Annual <span class="text-green-600 dark:text-green-400 font-semibold">(Save 17%)</span>
+                </button>
+            </div>
+        </div>
+
         {{-- Pricing Grid --}}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             @foreach($plans as $plan)
                 @php
-                    $isRecommended = $loop->iteration === 2 && $plans->count() >= 3;
+                    $isRecommended = $plan->slug === 'pro'; // Pro plan is most popular
                     $isCurrentPlan = auth()->check() && auth()->user()->plan?->id === $plan->id;
+                    $annualPrice = $plan->price_cents > 0 ? round($plan->price_cents * 10) : 0; // 10 months instead of 12
                 @endphp
                 
                 {{-- Card Wrapper with extra space for badge --}}
@@ -175,9 +188,25 @@
                     {{-- Price --}}
                     <div class="mb-6">
                         @if($plan->price_cents)
-                            <div class="flex items-baseline gap-1">
-                                <span class="text-5xl font-bold">${{ number_format($plan->price_cents / 100, 2) }}</span>
-                                <span class="text-base text-[#706f6c] dark:text-[#888]">/ month</span>
+                            <div class="monthly-price">
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-5xl font-bold">${{ number_format($plan->price_cents / 100, 2) }}</span>
+                                    <span class="text-base text-[#706f6c] dark:text-[#888]">/ month</span>
+                                </div>
+                                @if($plan->price_cents > 0)
+                                    <div class="text-sm text-[#706f6c] dark:text-[#888] mt-1">
+                                        Annual: ${{ number_format($annualPrice / 100, 2) }}/year
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="annual-price hidden">
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-5xl font-bold">${{ number_format($annualPrice / 100, 2) }}</span>
+                                    <span class="text-base text-[#706f6c] dark:text-[#888]">/ year</span>
+                                </div>
+                                <div class="text-sm text-green-600 dark:text-green-400 mt-1 font-semibold">
+                                    Save ${{ number_format(($plan->price_cents * 12 - $annualPrice) / 100, 2) }} per year
+                                </div>
                             </div>
                         @else
                             <span class="text-5xl font-bold">Free</span>
@@ -301,5 +330,34 @@
     </div>
     
     @livewireScripts
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const monthlyToggle = document.getElementById('monthly-toggle');
+            const annualToggle = document.getElementById('annual-toggle');
+            const monthlyPrices = document.querySelectorAll('.monthly-price');
+            const annualPrices = document.querySelectorAll('.annual-price');
+            
+            monthlyToggle.addEventListener('click', function() {
+                monthlyToggle.classList.add('bg-white', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-white', 'shadow-sm');
+                monthlyToggle.classList.remove('text-gray-500', 'dark:text-gray-400');
+                annualToggle.classList.remove('bg-white', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-white', 'shadow-sm');
+                annualToggle.classList.add('text-gray-500', 'dark:text-gray-400');
+                
+                monthlyPrices.forEach(price => price.classList.remove('hidden'));
+                annualPrices.forEach(price => price.classList.add('hidden'));
+            });
+            
+            annualToggle.addEventListener('click', function() {
+                annualToggle.classList.add('bg-white', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-white', 'shadow-sm');
+                annualToggle.classList.remove('text-gray-500', 'dark:text-gray-400');
+                monthlyToggle.classList.remove('bg-white', 'dark:bg-gray-700', 'text-gray-900', 'dark:text-white', 'shadow-sm');
+                monthlyToggle.classList.add('text-gray-500', 'dark:text-gray-400');
+                
+                annualPrices.forEach(price => price.classList.remove('hidden'));
+                monthlyPrices.forEach(price => price.classList.add('hidden'));
+            });
+        });
+    </script>
 </body>
 </html>
