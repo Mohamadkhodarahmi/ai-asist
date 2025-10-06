@@ -96,17 +96,17 @@
             animation: badge-bounce 2s ease-in-out infinite;
         }
         
-        /* Enhanced button 3D effect */
-        button[type="submit"]:not(:disabled),
-        a[href] {
+        /* Enhanced button 3D effect - only for pricing page buttons */
+        .pricing-page button[type="submit"]:not(:disabled),
+        .pricing-page .btn-shimmer {
             box-shadow: 
                 0 4px 6px -1px rgba(245, 48, 3, 0.3),
                 0 2px 4px -1px rgba(245, 48, 3, 0.2),
                 inset 0 -2px 0 rgba(0, 0, 0, 0.2);
         }
         
-        button[type="submit"]:not(:disabled):hover,
-        a[href]:hover {
+        .pricing-page button[type="submit"]:not(:disabled):hover,
+        .pricing-page .btn-shimmer:hover {
             box-shadow: 
                 0 20px 25px -5px rgba(245, 48, 3, 0.4),
                 0 10px 10px -5px rgba(245, 48, 3, 0.3),
@@ -114,7 +114,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC]">
+<body class="pricing-page min-h-screen bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC]">
     @include('layouts.navigation')
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

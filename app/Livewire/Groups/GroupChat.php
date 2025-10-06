@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\GroupFile;
 use App\Models\GroupMessage;
 use App\Services\ChatService;
+use App\Services\PlanLimiter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
@@ -111,6 +112,15 @@ class GroupChat extends Component
             'question' => $userMessage->message,
         ]);
 
+        // Check message limits before generating AI response
+        $planLimiter = app(PlanLimiter::class);
+        $user = Auth::user();
+        if (! $planLimiter->canSendMessage($user)) {
+            session()->flash('error', 'Daily message limit reached for your plan. Please upgrade to continue getting AI responses.');
+
+            return;
+        }
+
         try {
             $chatService = app(ChatService::class);
 
@@ -154,6 +164,9 @@ class GroupChat extends Component
                 'ai_message_id' => $aiMessage->id,
                 'message_content' => $aiMessage->message,
             ]);
+
+            // Count towards plan usage for AI response
+            $planLimiter->hit($user);
 
             // Broadcast the AI response directly (immediate)
             $broadcaster = app('Illuminate\Contracts\Broadcasting\Broadcaster');

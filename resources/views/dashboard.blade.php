@@ -159,7 +159,7 @@
                                         </svg>
                                         Go to Chat
                                     </a>
-                                    <a href="{{ route('upload') }}" class="flex-1 text-center py-4 px-6 bg-white dark:bg-[#2a2a2a] text-[#1b1b18] dark:text-[#EDEDEC] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded-xl hover:bg-gray-50 dark:hover:bg-[#3a3a3a] transition-all duration-300 font-semibold hover:scale-[1.02]">
+                                    <a href="{{ route('upload') }}" class="flex-1 text-center py-4 px-6 bg-white dark:bg-white text-black dark:text-black border border-[#e3e3e0] dark:border-[#e3e3e0] rounded-xl hover:bg-gray-50 dark:hover:bg-gray-50 transition-all duration-300 font-semibold hover:scale-[1.02]">
                                         <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
                                         </svg>
