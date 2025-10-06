@@ -75,6 +75,17 @@
                     Pricing
                 </a>
 
+                @if(in_array(auth()->user()?->plan?->slug ?? '', ['pro', 'business']))
+                    <a href="{{ route('analytics') }}" 
+                       class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('analytics') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('analytics') ? 'page' : null }}">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        Analytics
+                    </a>
+                @endif
+
                 <a href="{{ route('docs') }}" 
                    class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('docs') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
