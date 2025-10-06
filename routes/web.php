@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
     Route::get('/pricing', [PlanController::class, 'index'])->name('pricing');
     Route::get('/analytics', \App\Livewire\AnalyticsDashboard::class)->name('analytics');
+    Route::get('/personality', \App\Livewire\PersonalityManager::class)->name('personality');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
