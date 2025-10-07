@@ -29,6 +29,19 @@
                             </p>
                         </div>
                         <div class="hidden md:flex items-center gap-3">
+                            @if($user->plan)
+                                <div class="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50">
+                                    <span class="text-sm text-[#706f6c] dark:text-[#A1A09A]">Current Plan:</span>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-lg text-sm font-semibold
+                                        @if($user->plan->slug === 'free') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
+                                        @elseif($user->plan->slug === 'starter') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                        @elseif($user->plan->slug === 'pro') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
+                                        @elseif($user->plan->slug === 'business') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                        @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @endif">
+                                        {{ ucfirst($user->plan->name) }}
+                                    </span>
+                                </div>
+                            @endif
                             <div class="w-12 h-12 bg-gradient-to-br from-[#F53003] to-[#FF4433] rounded-full flex items-center justify-center text-white font-bold text-lg">
                                 {{ strtoupper(substr($user->name, 0, 1)) }}
                             </div>
@@ -119,6 +132,170 @@
                                 </svg>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {{-- Tier-Specific Features Section --}}
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-[#1b1b18] dark:text-[#EDEDEC] mb-6">Your Features</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        
+                        {{-- Personality Management Card --}}
+                        @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+                            <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v9a2 2 0 01-2 2h-5l-4 4z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC]">AI Personality</h3>
+                                        <p class="text-sm text-[#706f6c] dark:text-[#A1A09A]">Customize your AI's tone & style</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-4">
+                                    Create and manage custom AI personalities with different tones, styles, and behaviors.
+                                </p>
+                                <a href="{{ route('personality') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                    </svg>
+                                    Manage Personalities
+                                </a>
+                            </div>
+                        @else
+                            <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg opacity-60 relative">
+                                <div class="absolute inset-0 bg-gradient-to-br from-gray-100/50 to-gray-200/50 dark:from-gray-800/50 dark:to-gray-900/50 rounded-2xl"></div>
+                                <div class="relative z-10">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="w-12 h-12 bg-gray-400 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v9a2 2 0 01-2 2h-5l-4 4z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC]">AI Personality</h3>
+                                            <p class="text-sm text-[#706f6c] dark:text-[#A1A09A]">Customize your AI's tone & style</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-4">
+                                        Create and manage custom AI personalities with different tones, styles, and behaviors.
+                                    </p>
+                                    <div class="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg font-medium">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                        </svg>
+                                        <a href="{{ route('pricing') }}" class="hover:text-gray-800 dark:hover:text-gray-200 transition-colors">Upgrade to Starter+</a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Export Conversations Card --}}
+                        @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+                            <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC]">Export Data</h3>
+                                        <p class="text-sm text-[#706f6c] dark:text-[#A1A09A]">Download your conversations</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-4">
+                                    Export your chat history and conversations in CSV, JSON, or PDF formats.
+                                </p>
+                                <a href="{{ route('export') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                    </svg>
+                                    Export Conversations
+                                </a>
+                            </div>
+                        @else
+                            <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg opacity-60 relative">
+                                <div class="absolute inset-0 bg-gradient-to-br from-gray-100/50 to-gray-200/50 dark:from-gray-800/50 dark:to-gray-900/50 rounded-2xl"></div>
+                                <div class="relative z-10">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="w-12 h-12 bg-gray-400 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC]">Export Data</h3>
+                                            <p class="text-sm text-[#706f6c] dark:text-[#A1A09A]">Download your conversations</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-4">
+                                        Export your chat history and conversations in CSV, JSON, or PDF formats.
+                                    </p>
+                                    <div class="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg font-medium">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                        </svg>
+                                        <a href="{{ route('pricing') }}" class="hover:text-gray-800 dark:hover:text-gray-200 transition-colors">Upgrade to Starter+</a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Analytics Dashboard Card --}}
+                        @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
+                            <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC]">Analytics</h3>
+                                        <p class="text-sm text-[#706f6c] dark:text-[#A1A09A]">Track usage & insights</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-4">
+                                    Get detailed analytics on your AI usage, conversation patterns, and performance metrics.
+                                </p>
+                                <a href="{{ route('analytics') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                    </svg>
+                                    View Analytics
+                                </a>
+                            </div>
+                        @else
+                            <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg opacity-60 relative">
+                                <div class="absolute inset-0 bg-gradient-to-br from-gray-100/50 to-gray-200/50 dark:from-gray-800/50 dark:to-gray-900/50 rounded-2xl"></div>
+                                <div class="relative z-10">
+                                    <div class="flex items-center gap-4 mb-4">
+                                        <div class="w-12 h-12 bg-gray-400 rounded-xl flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC]">Analytics</h3>
+                                            <p class="text-sm text-[#706f6c] dark:text-[#A1A09A]">Track usage & insights</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-4">
+                                        Get detailed analytics on your AI usage, conversation patterns, and performance metrics.
+                                    </p>
+                                    <div class="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg font-medium">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                        </svg>
+                                        <a href="{{ route('pricing') }}" class="hover:text-gray-800 dark:hover:text-gray-200 transition-colors">Upgrade to Pro+</a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
 

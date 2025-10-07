@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\AiPersonality;
+use App\Services\AnalyticsService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -64,13 +65,13 @@ class PersonalityManager extends Component
         $this->resetForm();
     }
 
-    public function createPersonality(): void
+    public function createPersonality(AnalyticsService $analyticsService): void
     {
         $this->validate();
 
         $user = Auth::user();
 
-        AiPersonality::create([
+        $personality = AiPersonality::create([
             'user_id' => $user->id,
             'name' => $this->name,
             'tone' => $this->tone,
@@ -78,6 +79,14 @@ class PersonalityManager extends Component
             'system_prompt' => $this->system_prompt ?: null,
             'greeting_message' => $this->greeting_message ?: null,
             'is_active' => false,
+        ]);
+
+        // Track analytics
+        $analyticsService->trackUserActivity($user, 'personality_created', [
+            'personality_id' => $personality->id,
+            'personality_name' => $this->name,
+            'tone' => $this->tone,
+            'style' => $this->style,
         ]);
 
         $this->resetForm();

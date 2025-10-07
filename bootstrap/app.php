@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'telegram.validate' => App\Http\Middleware\ValidateTelegramWebhook::class,
             'telegram.limiter' => App\Http\Middleware\TelegramRateLimiter::class,
             'guest' => App\Http\Middleware\RedirectIfAuthenticated::class,
+            'admin' => App\Http\Middleware\AdminMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

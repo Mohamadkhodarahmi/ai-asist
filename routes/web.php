@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\ChatController as ApiChatController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ExportController;
 // No longer need ChatPageController for this route
 use App\Http\Controllers\PlanController;
 use App\Livewire\ChatInterface;
@@ -50,6 +51,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/pricing', [PlanController::class, 'index'])->name('pricing');
     Route::get('/analytics', \App\Livewire\AnalyticsDashboard::class)->name('analytics');
     Route::get('/personality', \App\Livewire\PersonalityManager::class)->name('personality');
+    Route::get('/export', \App\Livewire\ConversationExporter::class)->name('export');
+    Route::get('/export/conversations', [ExportController::class, 'exportConversations'])->name('export.conversations');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
@@ -67,6 +70,20 @@ Route::middleware('auth')->group(function () {
     // Groups routes
     Route::get('/groups', \App\Livewire\Groups\GroupList::class)->name('groups.index');
     Route::get('/groups/{group}', \App\Livewire\Groups\GroupChat::class)->name('groups.chat');
+});
+
+// --- Admin Routes ---
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('admin.analytics');
+    Route::get('/analytics/data', [App\Http\Controllers\Admin\AnalyticsController::class, 'data'])->name('admin.analytics.data');
+    Route::get('/analytics/users', [App\Http\Controllers\Admin\AnalyticsController::class, 'users'])->name('admin.analytics.users');
+    Route::get('/analytics/revenue', [App\Http\Controllers\Admin\AnalyticsController::class, 'revenue'])->name('admin.analytics.revenue');
+    Route::get('/analytics/engagement', [App\Http\Controllers\Admin\AnalyticsController::class, 'engagement'])->name('admin.analytics.engagement');
+    Route::get('/analytics/growth', [App\Http\Controllers\Admin\AnalyticsController::class, 'growth'])->name('admin.analytics.growth');
+    Route::get('/analytics/usage', [App\Http\Controllers\Admin\AnalyticsController::class, 'usage'])->name('admin.analytics.usage');
+    Route::get('/analytics/cohorts', [App\Http\Controllers\Admin\AnalyticsController::class, 'cohorts'])->name('admin.analytics.cohorts');
+    Route::get('/analytics/features', [App\Http\Controllers\Admin\AnalyticsController::class, 'features'])->name('admin.analytics.features');
+    Route::get('/analytics/export', [App\Http\Controllers\Admin\AnalyticsController::class, 'export'])->name('admin.analytics.export');
 });
 
 // --- Authenticated API Routes ---

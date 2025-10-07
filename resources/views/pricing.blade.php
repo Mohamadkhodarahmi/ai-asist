@@ -149,13 +149,44 @@
                 @endphp
                 
                 {{-- Card Wrapper with extra space for badge --}}
-                <div class="@if($isRecommended) pt-6 @endif">
+                <div class="@if($isRecommended || $isCurrentPlan) pt-6 @endif">
                 <div class="relative rounded-2xl p-8 flex flex-col border transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl
-                            @if($isRecommended)
+                            @if($isCurrentPlan)
+                                border-green-500 shadow-xl shadow-green-500/20 dark:bg-[#1a1a1a] lg:scale-105
+                            @elseif($isRecommended)
                                 border-[#F53003] shadow-xl shadow-[#F53003]/20 dark:bg-[#1a1a1a] lg:scale-105
                             @else
                                 border-[#e3e3e0] dark:border-[#2a2a2a] dark:bg-[#141414] hover:border-[#F53003]
                             @endif">
+
+                        {{-- Current Plan Badge --}}
+                        @if($isCurrentPlan)
+                            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 w-full flex justify-center">
+                                <div class="relative">
+                                 <div class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-extrabold uppercase tracking-wider
+             bg-gradient-to-r from-green-500/20 to-green-600/20 
+             text-gray-900 dark:text-white
+             shadow-[0_4px_14px_0_rgba(34,197,94,0.3)]
+             border border-green-400/10
+             backdrop-blur-xl
+             relative overflow-hidden
+             whitespace-nowrap">
+     
+     {{-- Shine effect --}}
+     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+     
+     <svg class="w-3 h-3 relative z-10 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+     </svg>
+ 
+     <span class="relative z-10">Your Plan</span>
+ </div>
+
+                                    {{-- Enhanced glow --}}
+                                    {{-- <div class="absolute -inset-1 bg-gradient-to-r from-green-500/5 to-green-600/5 rounded-lg blur-xl opacity-10 -z-10 animate-pulse"></div> --}}
+                                </div>
+                            </div>
+                        @endif
 
                         {{-- Recommended Badge --}}
                         @if($isRecommended)
@@ -230,30 +261,46 @@
                         @auth
                             @if(($plan->price_cents ?? 0) > 0)
                                 {{-- Paid Plan Button --}}
-                                <form method="GET" action="{{ route('checkout.create') }}" class="w-full">
-                                    <input type="hidden" name="plan_id" value="{{ $plan->id }}">
-                                    <button type="submit" 
-                                        class="btn-shimmer group relative w-full px-6 py-4 rounded-xl font-bold text-base text-white 
-                                               bg-gradient-to-br from-[#F53003] via-[#ff3311] to-[#ff4422] 
-                                               hover:from-[#ff4422] hover:via-[#ff3311] hover:to-[#F53003]
-                                               shadow-lg shadow-[#F53003]/30
-                                               transition-all duration-300 ease-in-out
-                                               hover:scale-105 hover:shadow-2xl hover:shadow-[#F53003]/50
-                                               active:scale-95
-                                               focus:outline-none focus:ring-4 focus:ring-[#F53003]/50
-                                               transform
-                                               overflow-hidden">
-                                        <span class="relative z-10 flex items-center justify-center gap-2">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                            </svg>
-                                        Buy {{ $plan->name }}
-                                        </span>
-                                        <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 
-                                                    opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                                                    transform -skew-x-12"></div>
-                                    </button>
-                                </form>
+                                @if($isCurrentPlan)
+                                    {{-- Current Plan Badge --}}
+                                    <div class="w-full px-6 py-4 rounded-xl font-bold text-base text-gray-900 dark:text-white
+                                               bg-gradient-to-br from-green-500/20 to-green-600/20 
+                                               shadow-lg shadow-green-500/20
+                                               flex items-center justify-center gap-2
+                                               border-2 border-green-400/10
+                                               backdrop-blur-xl">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Current Plan
+                                    </div>
+                                @else
+                                    {{-- Buy Plan Button --}}
+                                    <form method="GET" action="{{ route('checkout.create') }}" class="w-full">
+                                        <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                        <button type="submit" 
+                                            class="btn-shimmer group relative w-full px-6 py-4 rounded-xl font-bold text-base text-white 
+                                                   bg-gradient-to-br from-[#F53003] via-[#ff3311] to-[#ff4422] 
+                                                   hover:from-[#ff4422] hover:via-[#ff3311] hover:to-[#F53003]
+                                                   shadow-lg shadow-[#F53003]/30
+                                                   transition-all duration-300 ease-in-out
+                                                   hover:scale-105 hover:shadow-2xl hover:shadow-[#F53003]/50
+                                                   active:scale-95
+                                                   focus:outline-none focus:ring-4 focus:ring-[#F53003]/50
+                                                   transform
+                                                   overflow-hidden">
+                                            <span class="relative z-10 flex items-center justify-center gap-2">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                                </svg>
+                                            Buy {{ $plan->name }}
+                                            </span>
+                                            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 
+                                                        opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                                                        transform -skew-x-12"></div>
+                                        </button>
+                                    </form>
+                                @endif
                             @else
                                 {{-- Free Plan Button --}}
                                 <form method="POST" action="{{ route('plan.select') }}" class="w-full">

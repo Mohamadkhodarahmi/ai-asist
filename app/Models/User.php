@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -68,5 +69,25 @@ class User extends Authenticatable
         return $this->belongsToMany(Group::class, 'group_members')
             ->withPivot('role')
             ->withTimestamps();
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function chatAnalytics(): HasMany
+    {
+        return $this->hasMany(ChatAnalytic::class);
+    }
+
+    public function documentAnalytics(): HasMany
+    {
+        return $this->hasMany(DocumentAnalytic::class);
+    }
+
+    public function userActivityAnalytics(): HasMany
+    {
+        return $this->hasMany(UserActivityAnalytic::class);
     }
 }

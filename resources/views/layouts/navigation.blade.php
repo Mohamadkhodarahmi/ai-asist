@@ -75,27 +75,6 @@
                     Pricing
                 </a>
 
-                @if(in_array(auth()->user()?->plan?->slug ?? '', ['pro', 'business']))
-                    <a href="{{ route('analytics') }}" 
-                       class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('analytics') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('analytics') ? 'page' : null }}">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                        </svg>
-                        Analytics
-                    </a>
-                @endif
-
-                @if(in_array(auth()->user()?->plan?->slug ?? '', ['starter', 'pro', 'business']))
-                    <a href="{{ route('personality') }}" 
-                       class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('personality') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('personality') ? 'page' : null }}">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v9a2 2 0 01-2 2h-5l-4 4z"/>
-                        </svg>
-                        Personality
-                    </a>
-                @endif
 
                 <a href="{{ route('docs') }}" 
                    class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('docs') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">
@@ -147,7 +126,32 @@
                         <div class="px-4 py-2 border-b border-[#e3e3e0] dark:border-[#3E3E3A]">
                             <p class="text-sm text-[#706f6c] dark:text-[#A1A09A]">Signed in as</p>
                             <p class="text-sm font-semibold text-[#1b1b18] dark:text-[#EDEDEC] truncate">{{ $user->email }}</p>
+                            @if($user->plan)
+                                <div class="mt-2">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium
+                                        @if($user->plan->slug === 'free') bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
+                                        @elseif($user->plan->slug === 'starter') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                        @elseif($user->plan->slug === 'pro') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
+                                        @elseif($user->plan->slug === 'business') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                        @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @endif">
+                                        {{ ucfirst($user->plan->name) }} Plan
+                                    </span>
+                                </div>
+                            @else
+                                <div class="mt-2">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                                        Free Plan
+                                    </span>
+                                </div>
+                            @endif
                         </div>
+                        
+                        <a href="{{ route('admin.analytics') }}" class="w-full text-left flex items-center px-4 py-2 text-sm text-[#1b1b18] dark:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 transition-colors duration-200">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                            Analytics Dashboard
+                        </a>
                         
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
