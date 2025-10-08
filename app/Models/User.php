@@ -25,6 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
         'business_id',
+        'is_admin',
     ];
 
     /**
@@ -47,6 +48,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
@@ -89,5 +91,13 @@ class User extends Authenticatable
     public function userActivityAnalytics(): HasMany
     {
         return $this->hasMany(UserActivityAnalytic::class);
+    }
+
+    /**
+     * Check if the user is an administrator.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->is_admin;
     }
 }

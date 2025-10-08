@@ -146,12 +146,14 @@
                             @endif
                         </div>
                         
-                        <a href="{{ route('admin.analytics') }}" class="w-full text-left flex items-center px-4 py-2 text-sm text-[#1b1b18] dark:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 transition-colors duration-200">
+                        @if($user->isAdmin())
+                        <a href="{{ route('admin.analytics') }}" class="w-full text-left flex items-center px-4 py-2 text-sm text-[#1b1b18] dark:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 transition-colors duration-200 border-b border-[#e3e3e0] dark:border-[#3E3E3A]">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                             </svg>
-                            Analytics Dashboard
+                            🛠️ Admin Panel
                         </a>
+                        @endif
                         
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -186,6 +188,9 @@
             <a href="{{ route('pricing') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('pricing') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">Pricing</a>
             <a href="{{ route('docs') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('docs') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">Docs</a>
             <a href="{{ route('community') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('community') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('community') ? 'page' : null }}">Community</a>
+            @if($user->isAdmin())
+            <a href="{{ route('admin.analytics') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('admin.*') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('admin.*') ? 'page' : null }}">🛠️ Admin Panel</a>
+            @endif
             <div class="pt-4 mt-4 border-t border-[#e3e3e0] dark:border-[#3E3E3A]">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

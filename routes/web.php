@@ -74,6 +74,7 @@ Route::middleware('auth')->group(function () {
 
 // --- Admin Routes ---
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    // Analytics Routes
     Route::get('/analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('admin.analytics');
     Route::get('/analytics/data', [App\Http\Controllers\Admin\AnalyticsController::class, 'data'])->name('admin.analytics.data');
     Route::get('/analytics/users', [App\Http\Controllers\Admin\AnalyticsController::class, 'users'])->name('admin.analytics.users');
@@ -84,6 +85,22 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/analytics/cohorts', [App\Http\Controllers\Admin\AnalyticsController::class, 'cohorts'])->name('admin.analytics.cohorts');
     Route::get('/analytics/features', [App\Http\Controllers\Admin\AnalyticsController::class, 'features'])->name('admin.analytics.features');
     Route::get('/analytics/export', [App\Http\Controllers\Admin\AnalyticsController::class, 'export'])->name('admin.analytics.export');
+
+    // User Management Routes
+    Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'show'])->name('admin.users.show');
+    Route::post('/users/{user}/toggle-admin', [App\Http\Controllers\Admin\UserController::class, 'toggleAdmin'])->name('admin.users.toggle-admin');
+    Route::put('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::get('/users-stats', [App\Http\Controllers\Admin\UserController::class, 'stats'])->name('admin.users.stats');
+
+    // Activity Logs Routes
+    Route::get('/logs', [App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('admin.logs.index');
+
+    // System Health Routes
+    Route::get('/system', [App\Http\Controllers\Admin\SystemController::class, 'index'])->name('admin.system.index');
+    Route::get('/system/health', [App\Http\Controllers\Admin\SystemController::class, 'health'])->name('admin.system.health');
+    Route::post('/system/clear-cache', [App\Http\Controllers\Admin\SystemController::class, 'clearCache'])->name('admin.system.clear-cache');
 });
 
 // --- Authenticated API Routes ---

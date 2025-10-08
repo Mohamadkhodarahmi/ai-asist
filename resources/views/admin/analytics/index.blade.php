@@ -1,57 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Analytics Dashboard - {{ config('app.name') }}</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ time() }}">
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v={{ time() }}">
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v={{ time() }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}?v={{ time() }}">
-    
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
-    
-    <!-- Chart.js for analytics charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <style>
-        .metric-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-        
-        .metric-trend {
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        
-        .trend-up {
-            color: #10b981;
-        }
-        
-        .trend-down {
-            color: #ef4444;
-        }
-        
-        .trend-neutral {
-            color: #6b7280;
-        }
-    </style>
-</head>
-<body class="min-h-screen bg-gradient-to-br from-[#FDFDFC] via-[#f8f7f4] to-[#FDFDFC] dark:from-[#0a0a0a] dark:via-[#1a1a1a] dark:to-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC]">
-    @include('layouts.navigation')
+@extends('admin.layout')
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+@section('title', 'Analytics Dashboard')
+
+@push('styles')
+<!-- Chart.js for analytics charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .metric-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+    
+    .metric-trend {
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .trend-up {
+        color: #10b981;
+    }
+    
+    .trend-down {
+        color: #ef4444;
+    }
+    
+    .trend-neutral {
+        color: #6b7280;
+    }
+</style>
+@endpush
+
+@section('content')
+<div class="max-w-7xl mx-auto">
         <!-- Header -->
         <div class="mb-8">
             <div class="flex items-center justify-between">
@@ -207,11 +194,10 @@
                 </div>
             </div>
         </div>
-    </div>
+</div>
 
-    @livewireScripts
-    
-    <script>
+@push('scripts')
+<script>
         // Chart.js configuration
         Chart.defaults.color = '#6b7280';
         Chart.defaults.borderColor = '#e5e7eb';
@@ -427,5 +413,5 @@
             initializeCharts();
         });
     </script>
-</body>
-</html>
+@endpush
+@endsection
