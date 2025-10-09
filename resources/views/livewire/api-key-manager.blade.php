@@ -115,8 +115,13 @@
 
                 {{-- Create Form --}}
                 @if($showCreateForm)
-                    <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-                        <h4 class="text-md font-semibold text-gray-900 dark:text-white mb-4">Create New API Key</h4>
+                    <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                        <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m0 0a2 2 0 012 2m-2-2a2 2 0 00-2 2m2-2V5a2 2 0 00-2-2m0 0H9a2 2 0 00-2 2v2m0 0a2 2 0 00-2 2m0 0v2a2 2 0 002 2m0 0h6a2 2 0 002-2v-2m0 0a2 2 0 00-2-2m0 0V9a2 2 0 00-2 2"/>
+                            </svg>
+                            Create New API Key
+                        </h4>
                         
                         <div class="space-y-4">
                             <div>
@@ -143,11 +148,12 @@
                                 @error('expiresAt') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
 
-                            <div class="flex gap-3">
-                                <button wire:click="createApiKey" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                                    Create Key
+                            <div class="flex gap-3 pt-4">
+                                <button wire:click="createApiKey" wire:loading.attr="disabled" wire:loading.class="opacity-50 cursor-not-allowed" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <span wire:loading.remove wire:target="createApiKey">💾 Create Key</span>
+                                    <span wire:loading wire:target="createApiKey">⏳ Creating...</span>
                                 </button>
-                                <button wire:click="toggleCreateForm" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                <button wire:click="toggleCreateForm" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-3 rounded-lg font-semibold transition-colors">
                                     Cancel
                                 </button>
                             </div>
