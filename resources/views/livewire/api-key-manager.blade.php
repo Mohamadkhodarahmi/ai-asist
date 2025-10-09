@@ -1,5 +1,5 @@
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+<div class="py-12 min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {{-- Header --}}
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">🔑 API Key Management</h1>
@@ -30,7 +30,7 @@
                     @if (session()->has('new_api_key'))
                         <div class="mt-3 p-3 bg-green-100 dark:bg-green-900/40 rounded-lg">
                             <p class="text-sm font-medium text-green-900 dark:text-green-100 mb-2">Your new API key:</p>
-                            <code class="block text-sm bg-white dark:bg-gray-800 p-2 rounded border font-mono text-gray-900 dark:text-white break-all">{{ session('new_api_key') }}</code>
+                            <code class="block text-sm bg-white dark:bg-gray-800 p-2 rounded border font-mono text-gray-900 dark:text-white break-all overflow-x-auto">{{ session('new_api_key') }}</code>
                             <p class="text-xs text-green-700 dark:text-green-300 mt-2">
                                 ⚠️ Save this key securely - it will not be shown again!
                             </p>
@@ -39,7 +39,7 @@
                     @if (session()->has('old_api_key'))
                         <div class="mt-3 p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded-lg">
                             <p class="text-sm font-medium text-yellow-900 dark:text-yellow-100 mb-2">Old API key (now inactive):</p>
-                            <code class="block text-sm bg-white dark:bg-gray-800 p-2 rounded border font-mono text-gray-900 dark:text-white break-all">{{ session('old_api_key') }}</code>
+                            <code class="block text-sm bg-white dark:bg-gray-800 p-2 rounded border font-mono text-gray-900 dark:text-white break-all overflow-x-auto">{{ session('old_api_key') }}</code>
                         </div>
                     @endif
                 </div>
@@ -176,7 +176,7 @@
                                     
                                     <div class="mt-2 space-y-1">
                                         <p class="text-sm text-gray-600 dark:text-gray-400">
-                                            Key: <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs font-mono">{{ substr($apiKey['key'], 0, 8) }}...{{ substr($apiKey['key'], -4) }}</code>
+                                            Key: <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-xs font-mono break-all">{{ substr($apiKey['key'], 0, 8) }}...{{ substr($apiKey['key'], -4) }}</code>
                                         </p>
                                         
                                         @if($apiKey['permissions'])
@@ -231,14 +231,14 @@
             <div class="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
                 <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-4">📚 API Documentation</h3>
                 <div class="space-y-4 text-sm text-blue-800 dark:text-blue-200">
-                    <p><strong>Base URL:</strong> <code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded">{{ url('/api/v1') }}</code></p>
-                    <p><strong>Authentication:</strong> Include your API key in the <code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded">Authorization</code> header as <code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded">Bearer YOUR_API_KEY</code></p>
+                    <p><strong>Base URL:</strong> <code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded break-all">{{ url('/api/v1') }}</code></p>
+                    <p><strong>Authentication:</strong> Include your API key in the <code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded">Authorization</code> header as <code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded break-all">Bearer YOUR_API_KEY</code></p>
                     <p><strong>Available Endpoints:</strong></p>
                     <ul class="list-disc list-inside ml-4 space-y-1">
-                        <li><code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded">GET /api/v1/test</code> - Test API connectivity</li>
-                        <li><code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded">POST /api/v1/chat</code> - Chat with AI</li>
-                        <li><code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded">GET /api/v1/documents</code> - List documents</li>
-                        <li><code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded">POST /api/v1/search</code> - Search documents</li>
+                        <li><code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded break-all">GET /api/v1/test</code> - Test API connectivity</li>
+                        <li><code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded break-all">POST /api/v1/chat</code> - Chat with AI</li>
+                        <li><code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded break-all">GET /api/v1/documents</code> - List documents</li>
+                        <li><code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded break-all">POST /api/v1/search</code> - Search documents</li>
                     </ul>
                 </div>
             </div>
