@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\V1\BusinessController;
 use App\Http\Controllers\Api\V1\ChatController as ApiChatController;
+use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CheckoutController;
@@ -54,6 +56,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/export', \App\Livewire\ConversationExporter::class)->name('export');
     Route::get('/export/conversations', [ExportController::class, 'exportConversations'])->name('export.conversations');
     Route::get('/documents/analytics', \App\Livewire\DocumentAnalyticsDashboard::class)->name('documents.analytics');
+
+    // API Key Management
+    Route::get('/api-keys', \App\Livewire\ApiKeyManager::class)->name('api-keys.index');
+    Route::post('/api-keys', [ApiKeyController::class, 'store'])->name('api-keys.store');
+    Route::put('/api-keys/{apiKey}', [ApiKeyController::class, 'update'])->name('api-keys.update');
+    Route::delete('/api-keys/{apiKey}', [ApiKeyController::class, 'destroy'])->name('api-keys.destroy');
+    Route::post('/api-keys/{apiKey}/regenerate', [ApiKeyController::class, 'regenerate'])->name('api-keys.regenerate');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 

@@ -99,6 +99,17 @@
                     </a>
                 @endif
 
+                {{-- API Keys Navigation Link --}}
+                @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
+                    <a href="{{ route('api-keys.index') }}" 
+                       class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('api-keys.*') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('api-keys.*') ? 'page' : null }}">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m0 0a2 2 0 012 2m-2-2a2 2 0 00-2 2m2-2V5a2 2 0 00-2-2m0 0H9a2 2 0 00-2 2v2m0 0a2 2 0 00-2 2m0 0v2a2 2 0 002 2m0 0h6a2 2 0 002-2v-2m0 0a2 2 0 00-2-2m0 0V9a2 2 0 00-2 2"/>
+                        </svg>
+                        API Keys
+                    </a>
+                @endif
+
                 <a href="{{ route('pricing') }}" 
                    class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('pricing') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,6 +235,7 @@
             @endif
             @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
                 <a href="{{ route('analytics') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('analytics') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('analytics') ? 'page' : null }}">Analytics</a>
+                <a href="{{ route('api-keys.index') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('api-keys.*') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('api-keys.*') ? 'page' : null }}">API Keys</a>
             @endif
             <a href="{{ route('pricing') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('pricing') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">Pricing</a>
             <a href="{{ route('docs') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('docs') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">Docs</a>

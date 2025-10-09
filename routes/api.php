@@ -1,41 +1,37 @@
 <?php
-use App\Http\Controllers\Webhooks\NOWPaymentsWebhookController;
+
+use App\Http\Controllers\Api\ApiController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
-use App\Http\Controllers\Api\V1\ChatController;
-use App\Http\Controllers\Api\V1\KnowledgeFileController;
-use App\Http\Controllers\Api\V1\TelegramBotController;
-use App\Http\Controllers\Api\V1\TelegramWebhookController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-
-
-// Authenticated user info
-// Test endpoint
-Route::post('/v1/telegram/webhook/test', function (Request $request) {
-    Log::info('Telegram webhook test hit', $request->all());
-
-    return response()->json(['status' => 'ok']);
-});
-Route::post('/webhooks/nowpayments', [NOWPaymentsWebhookController::class, 'handle'])->name('webhooks.nowpayments');
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Telegram webhook endpoints
-// Route::post('/v1/telegram/webhook/{token}', [TelegramWebhookController::class, 'handle'])
-//     ->name('telegram.webhook');
-
-Route::post('/v1/telegram/bot/{token}', [TelegramBotController::class, 'handle'])
-    ->name('telegram.bot');
-
-// API v1 group (protected)
-Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
-    // Knowledge File routes
-    Route::apiResource('knowledge-files', KnowledgeFileController::class);
-
-    // Chat route
-    Route::post('/chat/ask', [ChatController::class, 'ask']);
+// API v1 routes with authentication middleware
+Route::prefix('v1')->middleware(['api.auth'])->group(function () {
+    // Test endpoint
+    Route::get('/test', [ApiController::class, 'test']);
+    
+    // Chat endpoint
+    Route::post('/chat', [ApiController::class, 'chat']);
+    
+    // Document endpoints
+    Route::get('/documents', [ApiController::class, 'getDocuments']);
+    Route::post('/search', [ApiController::class, 'searchDocuments']);
+    
+    // Usage and rate limit endpoints
+    Route::get('/usage', [ApiController::class, 'getUsageStats']);
+    Route::get('/rate-limits', [ApiController::class, 'getRateLimits']);
 });

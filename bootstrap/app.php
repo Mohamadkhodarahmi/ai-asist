@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'telegram.limiter' => App\Http\Middleware\TelegramRateLimiter::class,
             'guest' => App\Http\Middleware\RedirectIfAuthenticated::class,
             'admin' => App\Http\Middleware\AdminMiddleware::class,
+            'api.auth' => App\Http\Middleware\ApiAuthentication::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
