@@ -21,7 +21,7 @@
             {{-- Stats Overview Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {{-- Total Documents --}}
-                <div class="bg-white dark:bg-[#1E1E1C] rounded-xl p-6 border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">Total Documents</h3>
                         <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,7 +37,7 @@
                 </div>
 
                 {{-- Total Queries --}}
-                <div class="bg-white dark:bg-[#1E1E1C] rounded-xl p-6 border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">Total Queries</h3>
                         <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +53,7 @@
                 </div>
 
                 {{-- Success Rate --}}
-                <div class="bg-white dark:bg-[#1E1E1C] rounded-xl p-6 border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">Success Rate</h3>
                         <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,7 +69,7 @@
                 </div>
 
                 {{-- Average Response Time --}}
-                <div class="bg-white dark:bg-[#1E1E1C] rounded-xl p-6 border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">Avg Response Time</h3>
                         <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,13 +88,13 @@
             {{-- Two Column Layout --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                 {{-- Most Used Documents --}}
-                <div class="bg-white dark:bg-[#1E1E1C] rounded-xl p-6 border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">📄 Most Used Documents</h3>
                     
                     @if(!empty($documentAnalytics['most_used_documents']) && count($documentAnalytics['most_used_documents']) > 0)
                         <div class="space-y-4">
                             @foreach($documentAnalytics['most_used_documents'] as $doc)
-                                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-[#141414] rounded-lg">
+                                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
                                             {{ $doc->document_name }}
@@ -130,13 +130,13 @@
                 </div>
 
                 {{-- Document Type Distribution --}}
-                <div class="bg-white dark:bg-[#1E1E1C] rounded-xl p-6 border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">📊 Document Type Performance</h3>
                     
                     @if(!empty($performanceStats['by_type']) && count($performanceStats['by_type']) > 0)
                         <div class="space-y-4">
                             @foreach($performanceStats['by_type'] as $typeData)
-                                <div class="p-3 bg-gray-50 dark:bg-[#141414] rounded-lg">
+                                <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                                     <div class="flex items-center justify-between mb-2">
                                         <span class="text-sm font-medium text-gray-900 dark:text-white uppercase">
                                             {{ $typeData['type'] }}
@@ -181,7 +181,7 @@
 
             {{-- Top Search Terms --}}
             @if(!empty($documentAnalytics['top_search_terms']) && count($documentAnalytics['top_search_terms']) > 0)
-                <div class="bg-white dark:bg-[#1E1E1C] rounded-xl p-6 border border-[#e3e3e0] dark:border-[#3E3E3A] mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-8">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🔍 Top Search Terms</h3>
                     
                     <div class="flex flex-wrap gap-2">
@@ -197,11 +197,11 @@
 
             {{-- Performance Trend --}}
             @if(!empty($performanceStats['performance_trend']) && count($performanceStats['performance_trend']) > 0)
-                <div class="bg-white dark:bg-[#1E1E1C] rounded-xl p-6 border border-[#e3e3e0] dark:border-[#3E3E3A]">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">📈 Performance Trend (Last 7 Days)</h3>
                     
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-[#e3e3e0] dark:divide-[#3E3E3A]">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
                             <thead>
                                 <tr>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Date</th>
@@ -210,7 +210,7 @@
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Avg Time</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-[#e3e3e0] dark:divide-[#3E3E3A]">
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
                                 @foreach($performanceStats['performance_trend'] as $day)
                                     <tr>
                                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
