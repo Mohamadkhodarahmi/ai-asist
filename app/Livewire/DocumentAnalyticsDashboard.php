@@ -4,8 +4,10 @@ namespace App\Livewire;
 
 use App\Services\AnalyticsService;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('components.app-layout')]
 class DocumentAnalyticsDashboard extends Component
 {
     public int $daysFilter = 30;
