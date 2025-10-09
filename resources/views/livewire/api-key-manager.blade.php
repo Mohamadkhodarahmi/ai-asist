@@ -1,5 +1,5 @@
-<div class="py-12 min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="py-12 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {{-- Header --}}
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">🔑 API Key Management</h1>
@@ -52,7 +52,7 @@
             @endif
 
             {{-- Rate Limits Overview --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 w-full">
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">Per Minute</h3>
@@ -88,7 +88,7 @@
             </div>
 
             {{-- Usage Stats --}}
-            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-8 w-full">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">📊 Usage Statistics (Last 30 Days)</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -103,7 +103,7 @@
             </div>
 
             {{-- API Keys List --}}
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 w-full">
                 <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">API Keys</h3>
@@ -228,7 +228,7 @@
             </div>
 
             {{-- API Documentation --}}
-            <div class="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+            <div class="mt-8 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800 w-full">
                 <h3 class="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-4">📚 API Documentation</h3>
                 <div class="space-y-4 text-sm text-blue-800 dark:text-blue-200">
                     <p><strong>Base URL:</strong> <code class="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded break-all">{{ url('/api/v1') }}</code></p>

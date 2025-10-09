@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('components.app-layout')]
+#[Layout('layouts.api-layout')]
 class ApiKeyManager extends Component
 {
     public $apiKeys = [];
