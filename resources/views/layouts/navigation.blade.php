@@ -120,23 +120,6 @@
                 </a>
 
 
-                <a href="{{ route('docs') }}" 
-                   class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('docs') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M12 20h9M12 4h9m-9 8h9M3 4h.01M3 12h.01M3 20h.01"/>
-                    </svg>
-                    Docs
-                </a>
-
-                <a href="{{ route('community') }}" 
-                   class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('community') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('community') ? 'page' : null }}">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M17 20h5V4H2v16h5m10-4a4 4 0 01-8 0m8 0a4 4 0 00-8 0"/>
-                    </svg>
-                    Community
-                </a>
             </div>
 
             <!-- Right Side: User Menu -->
@@ -238,8 +221,6 @@
                 <a href="{{ route('api-keys.index') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('api-keys.*') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('api-keys.*') ? 'page' : null }}">API Keys</a>
             @endif
             <a href="{{ route('pricing') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('pricing') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('pricing') ? 'page' : null }}">Pricing</a>
-            <a href="{{ route('docs') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('docs') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('docs') ? 'page' : null }}">Docs</a>
-            <a href="{{ route('community') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('community') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('community') ? 'page' : null }}">Community</a>
             @if($user->isAdmin())
             <a href="{{ route('admin.analytics') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('admin.*') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('admin.*') ? 'page' : null }}">🛠️ Admin Panel</a>
             @endif
