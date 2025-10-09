@@ -4,13 +4,13 @@ namespace App\Services;
 
 use App\Models\ChatAnalytic;
 use App\Models\DocumentAnalytic;
-use App\Models\User;
-use App\Models\UserActivityAnalytic;
 use App\Models\Order;
 use App\Models\Plan;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Models\UserActivityAnalytic;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 
 class AnalyticsService
 {
@@ -28,18 +28,20 @@ class AnalyticsService
         ]);
     }
 
-    public function trackDocumentUpload(User $user, ?int $businessId, string $documentName, string $documentType, int $fileSizeBytes, ?int $pagesCount = null): void
+    public function trackDocumentUpload(User $user, ?int $businessId, int $knowledgeFileId, string $documentName, string $documentType, int $fileSizeBytes, ?int $pagesCount = null): void
     {
         DocumentAnalytic::updateOrCreate(
             [
                 'user_id' => $user->id,
                 'business_id' => $businessId,
-                'document_name' => $documentName,
+                'knowledge_file_id' => $knowledgeFileId,
             ],
             [
+                'document_name' => $documentName,
                 'document_type' => $documentType,
                 'file_size_bytes' => $fileSizeBytes,
                 'pages_count' => $pagesCount,
+                'uploaded_at' => now(),
                 'last_accessed_at' => now(),
             ]
         );
@@ -98,21 +100,120 @@ class AnalyticsService
         ];
     }
 
-    public function getDocumentAnalytics(User $user): array
+    public function getDocumentAnalytics(User $user, int $days = 30): array
     {
+        $startDate = now()->subDays($days);
+
         $documents = DocumentAnalytic::where('user_id', $user->id)
-            ->orderBy('questions_asked', 'desc')
+            ->with('knowledgeFile')
+            ->orderBy('total_queries', 'desc')
             ->get();
 
         $totalDocuments = $documents->count();
-        $totalQuestions = $documents->sum('questions_asked');
+        $totalQueries = $documents->sum('total_queries');
+        $successfulQueries = $documents->sum('successful_queries');
+        $failedQueries = $documents->sum('failed_queries');
         $totalSizeBytes = $documents->sum('file_size_bytes');
+        $avgResponseTime = $documents->avg('avg_response_time_ms');
+
+        // Get documents uploaded in the time period
+        $recentDocuments = DocumentAnalytic::where('user_id', $user->id)
+            ->where('uploaded_at', '>=', $startDate)
+            ->count();
+
+        // Get search terms analysis
+        $allSearchTerms = $documents->pluck('search_terms')->filter()->flatten()->toArray();
+        $searchTermsFrequency = array_count_values($allSearchTerms);
+        arsort($searchTermsFrequency);
+
+        // Calculate success rate
+        $successRate = $totalQueries > 0 ? round(($successfulQueries / $totalQueries) * 100, 2) : 0;
 
         return [
             'total_documents' => $totalDocuments,
-            'total_questions' => $totalQuestions,
+            'total_queries' => $totalQueries,
+            'successful_queries' => $successfulQueries,
+            'failed_queries' => $failedQueries,
+            'success_rate' => $successRate,
+            'avg_response_time_ms' => round($avgResponseTime ?? 0),
             'total_size_mb' => round($totalSizeBytes / 1024 / 1024, 2),
-            'most_used_documents' => $documents->take(5),
+            'recent_uploads' => $recentDocuments,
+            'most_used_documents' => $documents->take(10),
+            'top_search_terms' => array_slice($searchTermsFrequency, 0, 20, true),
+        ];
+    }
+
+    public function trackDocumentQuery(int $knowledgeFileId, string $searchTerm, bool $success = true, ?int $responseTimeMs = null): void
+    {
+        $documentAnalytic = DocumentAnalytic::where('knowledge_file_id', $knowledgeFileId)->first();
+
+        if (! $documentAnalytic) {
+            return;
+        }
+
+        // Update query counts
+        $documentAnalytic->increment('total_queries');
+
+        if ($success) {
+            $documentAnalytic->increment('successful_queries');
+        } else {
+            $documentAnalytic->increment('failed_queries');
+        }
+
+        // Update average response time
+        if ($responseTimeMs !== null) {
+            $currentAvg = $documentAnalytic->avg_response_time_ms ?? 0;
+            $currentQueries = $documentAnalytic->total_queries;
+            $newAvg = (($currentAvg * ($currentQueries - 1)) + $responseTimeMs) / $currentQueries;
+            $documentAnalytic->avg_response_time_ms = round($newAvg, 2);
+        }
+
+        // Track search terms
+        $searchTerms = $documentAnalytic->search_terms ?? [];
+        $searchTerms[] = $searchTerm;
+        // Keep only last 100 search terms to prevent bloat
+        $documentAnalytic->search_terms = array_slice($searchTerms, -100);
+
+        // Update last accessed time
+        $documentAnalytic->last_accessed_at = now();
+
+        $documentAnalytic->save();
+    }
+
+    public function getDocumentPerformanceStats(User $user): array
+    {
+        $documents = DocumentAnalytic::where('user_id', $user->id)
+            ->with('knowledgeFile')
+            ->get();
+
+        // Group by document type
+        $typeStats = $documents->groupBy('document_type')->map(function ($docs, $type) {
+            return [
+                'type' => $type,
+                'count' => $docs->count(),
+                'total_queries' => $docs->sum('total_queries'),
+                'avg_response_time' => round($docs->avg('avg_response_time_ms'), 2),
+                'success_rate' => $docs->sum('total_queries') > 0
+                    ? round(($docs->sum('successful_queries') / $docs->sum('total_queries')) * 100, 2)
+                    : 0,
+            ];
+        })->values();
+
+        // Get performance over time (last 7 days)
+        $performanceTrend = DocumentAnalytic::where('user_id', $user->id)
+            ->where('last_accessed_at', '>=', now()->subDays(7))
+            ->selectRaw('DATE(last_accessed_at) as date, 
+                        COUNT(DISTINCT knowledge_file_id) as active_documents,
+                        SUM(total_queries) as queries,
+                        AVG(avg_response_time_ms) as avg_time')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return [
+            'by_type' => $typeStats,
+            'performance_trend' => $performanceTrend,
+            'total_storage_mb' => round($documents->sum('file_size_bytes') / 1024 / 1024, 2),
         ];
     }
 
@@ -140,7 +241,7 @@ class AnalyticsService
     public function getPlatformAnalytics(int $days = 30): array
     {
         $startDate = now()->subDays($days);
-        
+
         return [
             'users' => $this->getUserMetrics($startDate),
             'revenue' => $this->getRevenueMetrics($startDate),
@@ -157,7 +258,7 @@ class AnalyticsService
     {
         $totalUsers = User::count();
         $newUsers = User::where('created_at', '>=', $startDate)->count();
-        $activeUsers = User::whereHas('chatAnalytics', function($query) use ($startDate) {
+        $activeUsers = User::whereHas('chatAnalytics', function ($query) use ($startDate) {
             $query->where('created_at', '>=', $startDate);
         })->count();
 
@@ -208,7 +309,7 @@ class AnalyticsService
             ->get();
 
         // Average Revenue Per User (ARPU)
-        $payingUsers = User::whereHas('plan', function($query) {
+        $payingUsers = User::whereHas('plan', function ($query) {
             $query->whereNotNull('price_cents')->where('price_cents', '>', 0);
         })->count();
 
@@ -235,7 +336,7 @@ class AnalyticsService
     public function getEngagementMetrics(Carbon $startDate): array
     {
         // Daily Active Users (DAU)
-        $dau = User::whereHas('chatAnalytics', function($query) use ($startDate) {
+        $dau = User::whereHas('chatAnalytics', function ($query) use ($startDate) {
             $query->where('created_at', '>=', $startDate);
         })->count();
 
@@ -246,13 +347,13 @@ class AnalyticsService
 
         // Feature adoption rates
         $featureAdoption = [
-            'chat_usage' => User::whereHas('chatAnalytics', function($query) use ($startDate) {
+            'chat_usage' => User::whereHas('chatAnalytics', function ($query) use ($startDate) {
                 $query->where('created_at', '>=', $startDate);
             })->count(),
-            'document_upload' => User::whereHas('documentAnalytics', function($query) use ($startDate) {
+            'document_upload' => User::whereHas('documentAnalytics', function ($query) use ($startDate) {
                 $query->where('created_at', '>=', $startDate);
             })->count(),
-            'personality_customization' => User::whereHas('userActivityAnalytics', function($query) use ($startDate) {
+            'personality_customization' => User::whereHas('userActivityAnalytics', function ($query) use ($startDate) {
                 $query->where('activity_type', 'personality_created')->where('created_at', '>=', $startDate);
             })->count(),
         ];
@@ -272,7 +373,7 @@ class AnalyticsService
         // User growth rate
         $previousPeriodUsers = User::where('created_at', '<', $startDate)->count();
         $currentPeriodUsers = User::where('created_at', '>=', $startDate)->count();
-        $userGrowthRate = $previousPeriodUsers > 0 ? 
+        $userGrowthRate = $previousPeriodUsers > 0 ?
             round((($currentPeriodUsers - $previousPeriodUsers) / $previousPeriodUsers) * 100, 2) : 0;
 
         // Revenue growth rate
@@ -282,12 +383,12 @@ class AnalyticsService
         $currentRevenue = Order::where('status', 'paid')
             ->where('created_at', '>=', $startDate)
             ->sum('amount') / 100;
-        $revenueGrowthRate = $previousRevenue > 0 ? 
+        $revenueGrowthRate = $previousRevenue > 0 ?
             round((($currentRevenue - $previousRevenue) / $previousRevenue) * 100, 2) : 0;
 
         // Churn rate (simplified - users who haven't been active)
         $totalUsers = User::count();
-        $inactiveUsers = User::whereDoesntHave('chatAnalytics', function($query) use ($startDate) {
+        $inactiveUsers = User::whereDoesntHave('chatAnalytics', function ($query) use ($startDate) {
             $query->where('created_at', '>=', $startDate);
         })->count();
         $churnRate = $totalUsers > 0 ? round(($inactiveUsers / $totalUsers) * 100, 2) : 0;

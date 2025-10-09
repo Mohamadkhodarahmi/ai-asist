@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/personality', \App\Livewire\PersonalityManager::class)->name('personality');
     Route::get('/export', \App\Livewire\ConversationExporter::class)->name('export');
     Route::get('/export/conversations', [ExportController::class, 'exportConversations'])->name('export.conversations');
+    Route::get('/documents/analytics', \App\Livewire\DocumentAnalyticsDashboard::class)->name('documents.analytics');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 

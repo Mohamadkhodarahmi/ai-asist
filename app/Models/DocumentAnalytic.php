@@ -10,11 +10,18 @@ class DocumentAnalytic extends Model
     protected $fillable = [
         'user_id',
         'business_id',
+        'knowledge_file_id',
         'document_name',
         'document_type',
         'file_size_bytes',
         'pages_count',
         'questions_asked',
+        'total_queries',
+        'successful_queries',
+        'failed_queries',
+        'avg_response_time_ms',
+        'search_terms',
+        'uploaded_at',
         'last_accessed_at',
     ];
 
@@ -22,6 +29,8 @@ class DocumentAnalytic extends Model
     {
         return [
             'last_accessed_at' => 'datetime',
+            'uploaded_at' => 'datetime',
+            'search_terms' => 'array',
         ];
     }
 
@@ -33,5 +42,10 @@ class DocumentAnalytic extends Model
     public function business(): BelongsTo
     {
         return $this->belongsTo(Business::class);
+    }
+
+    public function knowledgeFile(): BelongsTo
+    {
+        return $this->belongsTo(KnowledgeFile::class);
     }
 }

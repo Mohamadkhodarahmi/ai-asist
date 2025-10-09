@@ -50,7 +50,7 @@
                 </div>
 
                 {{-- Statistics Cards --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                     {{-- Groups Card --}}
                     <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
                         <div class="flex items-center justify-between">
@@ -116,23 +116,79 @@
                         </div>
                     </div>
 
-                    {{-- Quick Actions Card --}}
-                    <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A] mb-1">Quick Actions</p>
-                                <p class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC]">Get Started</p>
-                                <p class="text-xs text-purple-600 dark:text-purple-400 mt-1">
-                                    Jump into action
-                                </p>
+                    {{-- Export Data Card (Prominent Placement) --}}
+                    @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+                        <a href="{{ route('export') }}" class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A] mb-1">Export Data</p>
+                                    <p class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC] group-hover:text-[#F53003] dark:group-hover:text-[#FF4433] transition-colors">Download</p>
+                                    <p class="text-xs text-green-600 dark:text-green-400 mt-1">
+                                        CSV, JSON, PDF
+                                    </p>
+                                </div>
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
                             </div>
-                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                </svg>
+                        </a>
+                    @else
+                        <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg opacity-60 relative group cursor-pointer" onclick="window.location.href='{{ route('pricing') }}'">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A] mb-1">Export Data</p>
+                                    <p class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC]">Upgrade</p>
+                                    <p class="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                                        Starter+ required
+                                    </p>
+                                </div>
+                                <div class="w-12 h-12 bg-gray-400 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                    </svg>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
+
+                    {{-- Analytics Card (Prominent Placement) --}}
+                    @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
+                        <a href="{{ route('analytics') }}" class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group cursor-pointer">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A] mb-1">Analytics</p>
+                                    <p class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC] group-hover:text-[#F53003] dark:group-hover:text-[#FF4433] transition-colors">Insights</p>
+                                    <p class="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                                        Usage & patterns
+                                    </p>
+                                </div>
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </a>
+                    @else
+                        <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg opacity-60 relative group cursor-pointer" onclick="window.location.href='{{ route('pricing') }}'">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-[#706f6c] dark:text-[#A1A09A] mb-1">Analytics</p>
+                                    <p class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC]">Upgrade</p>
+                                    <p class="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                                        Pro+ required
+                                    </p>
+                                </div>
+                                <div class="w-12 h-12 bg-gray-400 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Tier-Specific Features Section --}}
@@ -409,6 +465,18 @@
                         <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg">
                             <h3 class="text-lg font-bold text-[#1b1b18] dark:text-[#EDEDEC] mb-4">Quick Actions</h3>
                             <div class="space-y-3">
+                                <a href="{{ route('chat') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors group">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-[#F53003] to-[#FF4433] rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0c0-5 4-9 9-9s9 4 9 9z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-[#1b1b18] dark:text-[#EDEDEC]">Start Chat</p>
+                                        <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Talk to your AI</p>
+                                    </div>
+                                </a>
+
                                 <a href="{{ route('groups.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors group">
                                     <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -432,6 +500,36 @@
                                         <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Add knowledge base</p>
                                     </div>
                                 </a>
+
+                                {{-- Export Data Quick Action --}}
+                                @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+                                    <a href="{{ route('export') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors group">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-[#1b1b18] dark:text-[#EDEDEC]">Export Data</p>
+                                            <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">Download conversations</p>
+                                        </div>
+                                    </a>
+                                @endif
+
+                                {{-- Analytics Quick Action --}}
+                                @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
+                                    <a href="{{ route('analytics') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors group">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-[#1b1b18] dark:text-[#EDEDEC]">Analytics</p>
+                                            <p class="text-xs text-[#706f6c] dark:text-[#A1A09A]">View insights</p>
+                                        </div>
+                                    </a>
+                                @endif
 
                                 <a href="{{ route('pricing') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors group">
                                     <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
