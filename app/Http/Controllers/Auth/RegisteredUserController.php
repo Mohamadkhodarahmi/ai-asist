@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Plan;
+use App\Models\User;
+use App\Notifications\WelcomeNotification;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -54,12 +56,18 @@ class RegisteredUserController extends Controller
             $user->save();
         }
 
+        // Trigger the Registered event (for email verification)
+        event(new Registered($user));
+
+        // Send welcome email
+        $user->notify(new WelcomeNotification);
+
         // Log the user in automatically
         Auth::login($user);
 
         // Redirect to the dashboard with success message and onboarding flag
         return redirect()->route('dashboard')
-                        ->with('success', 'Welcome to AI Assistant Builder! Your account has been created successfully.')
-                        ->with('show_onboarding', true); // Flag to show onboarding tour
+            ->with('success', 'Welcome to withasisstant! Your account has been created successfully. Check your email for a verification link.')
+            ->with('show_onboarding', true); // Flag to show onboarding tour
     }
 }
