@@ -18,9 +18,12 @@ class RegisteredUserController extends Controller
      * Display the registration view.
      * This method returns YOUR custom registration page.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('auth.register'); // <-- YOUR CUSTOM VIEW WITH ENHANCED UI
+        // Pre-fill email if provided (e.g., from login redirect)
+        $email = $request->get('email');
+        
+        return view('auth.register', compact('email')); // <-- YOUR CUSTOM VIEW WITH ENHANCED UI
     }
 
     /**
@@ -62,12 +65,11 @@ class RegisteredUserController extends Controller
         // Send welcome email
         $user->notify(new WelcomeNotification);
 
-        // Log the user in automatically
+        // Log the user in automatically (but they'll be redirected to verification page)
         Auth::login($user);
 
-        // Redirect to the dashboard with success message and onboarding flag
-        return redirect()->route('dashboard')
-            ->with('success', 'Welcome to withasisstant! Your account has been created successfully. Check your email for a verification link.')
-            ->with('show_onboarding', true); // Flag to show onboarding tour
+        // Redirect to email verification page instead of dashboard
+        return redirect()->route('verification.notice')
+            ->with('success', 'Welcome to withasisstant! Your account has been created successfully. Please verify your email to continue.');
     }
 }

@@ -266,7 +266,7 @@
                             id="email" 
                             type="email" 
                             name="email" 
-                            value="{{ old('email') }}" 
+                            value="{{ old('email', $email ?? '') }}" 
                             required 
                             class="w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#f53003] focus:border-transparent transition-all form-input bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                             placeholder="Enter your email address"

@@ -49,6 +49,16 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        // Check if user exists first
+        $user = \App\Models\User::where('email', $this->input('email'))->first();
+        
+        if (!$user) {
+            // User doesn't exist, redirect to registration with email pre-filled
+            throw ValidationException::withMessages([
+                'email' => 'No account found with this email. Would you like to create one?',
+            ])->redirectTo(route('register', ['email' => $this->input('email')]));
+        }
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
