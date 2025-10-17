@@ -45,7 +45,7 @@ class DocumentAnalyticsDashboard extends Component
     {
         $planSlug = $user->plan?->slug;
 
-        return in_array($planSlug, ['starter', 'pro', 'business']);
+        return in_array($planSlug, ['starter', 'pro', 'business', 'enterprise']);
     }
 
     public function render()

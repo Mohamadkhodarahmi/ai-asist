@@ -3,15 +3,13 @@
 namespace App\Jobs;
 
 use App\Models\Business;
-use App\Models\TelegramChat;
-use App\Services\ChatService;
-use App\Services\TelegramService;
+use App\Models\TelegramBot;
+use App\Services\EnhancedTelegramService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -44,23 +42,39 @@ class ProcessTelegramMessage implements ShouldQueue
         $this->username = $username;
     }
 
-    public function handle(ChatService $chatService): void
+    public function handle(EnhancedTelegramService $enhancedTelegramService): void
     {
-        $answer = null;
-
         try {
-            // Get AI answer
-            $answer = $chatService->getAnswer($this->messageText, $this->business->id);
+            // Find the Telegram bot for this business
+            $bot = TelegramBot::where('business_id', $this->business->id)->first();
+            
+            if (!$bot) {
+                Log::warning('No Telegram bot found for business', [
+                    'business_id' => $this->business->id,
+                ]);
+                return;
+            }
 
-            // Send it via Telegram
-            $telegramService = new TelegramService($this->business->telegram_token);
-            $telegramService->sendMessage($this->chatId, $answer);
+            // Process the message using the enhanced service
+            $messageData = [
+                'chat' => [
+                    'id' => $this->chatId,
+                    'type' => 'private',
+                    'first_name' => $this->firstName,
+                    'last_name' => $this->lastName,
+                    'username' => $this->username,
+                ],
+                'message_id' => $this->messageId,
+                'text' => $this->messageText,
+            ];
 
-            Log::info('Telegram message processed', [
+            $enhancedTelegramService->processMessage($bot, $messageData);
+
+            Log::info('Telegram message processed successfully', [
                 'business_id' => $this->business->id,
+                'bot_id' => $bot->id,
                 'chat_id' => $this->chatId,
                 'question' => $this->messageText,
-                'answer' => $answer,
             ]);
 
         } catch (Throwable $e) {
@@ -69,38 +83,7 @@ class ProcessTelegramMessage implements ShouldQueue
                 'chat_id' => $this->chatId,
                 'question' => $this->messageText,
                 'error' => $e->getMessage(),
-            ]);
-        }
-        $chat = TelegramChat::firstOrCreate(
-            ['chat_id' => $this->chatId], // Search by the Telegram chat_id
-            [                             // Data to use if creating a new record
-                'first_name' => $this->firstName,
-                'last_name' => $this->lastName,
-                'username' => $this->username,
-                'type' => 'private',
-                // 'telegram_bot_id' => $this->business->id, // You may need to pass the business ID to the job for this
-            ]
-        );
-        // Save incoming message and AI response to the DB
-        DB::table('telegram_messages')->insert([
-            'telegram_chat_id' => $chat->id,
-            'message_id' => $this->messageId, // optionally store Telegram message_id if you pass it
-            'message_text' => $this->messageText,
-            'is_from_bot' => false,
-            'telegram_timestamp' => now(), // or use actual Telegram timestamp if available
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        if ($answer) {
-            DB::table('telegram_messages')->insert([
-                'telegram_chat_id' => $chat->id,
-                'message_id' => null,
-                'message_text' => $answer,
-                'is_from_bot' => true,
-                'telegram_timestamp' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }

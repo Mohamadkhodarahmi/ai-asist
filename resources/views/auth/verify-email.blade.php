@@ -146,9 +146,44 @@
         .email-icon {
             animation: bounce 2s infinite;
         }
+        
+        /* Ensure content is visible on all screen sizes */
+        @media (min-height: 800px) {
+            body {
+                align-items: flex-start;
+                padding-top: 2rem;
+            }
+        }
+        
+        @media (max-height: 799px) {
+            body {
+                align-items: center;
+            }
+        }
+        
+        /* Ensure the correct email button is always visible */
+        .correct-email-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .correct-email-button {
+            background: linear-gradient(135deg, #f53003, #c41e00);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(245, 48, 3, 0.3);
+        }
+        
+        .correct-email-button:hover {
+            background: linear-gradient(135deg, #c41e00, #a01700);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 48, 3, 0.4);
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center gradient-bg relative overflow-hidden">
+<body class="min-h-screen flex items-center justify-center gradient-bg relative overflow-y-auto">
     <!-- Animated background elements -->
     <div class="absolute inset-0 overflow-hidden">
         <div class="absolute -top-40 -right-40 w-80 h-80 bg-[#f53003]/5 rounded-full blur-3xl animate-float"></div>
@@ -165,7 +200,7 @@
         </a>
     </div>
 
-    <div class="w-full max-w-md p-8 relative z-10">
+    <div class="w-full max-w-md p-8 relative z-10 py-8">
         <!-- Logo and brand -->
         <div class="text-center mb-8 animate-fade-slide-up">
             <div class="inline-flex items-center gap-2 mb-4">
@@ -190,6 +225,24 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
                         <span class="font-medium">A new verification link has been sent to your email!</span>
+                    </div>
+                </div>
+            @endif
+
+            <!-- Success message for email update -->
+            @if (session('status') == 'email-updated')
+                <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 rounded-xl success-message">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <div>
+                            <span class="font-medium">Email address updated successfully!</span>
+                            <p class="text-sm mt-1">
+                                Changed from <strong>{{ session('old_email') }}</strong> to <strong>{{ session('new_email') }}</strong>
+                            </p>
+                            <p class="text-sm mt-1">A new verification link has been sent to your updated email address.</p>
+                        </div>
                     </div>
                 </div>
             @endif
@@ -247,6 +300,21 @@
                         <li>• Make sure you entered the correct email address</li>
                         <li>• Wait a few minutes and try resending</li>
                     </ul>
+                </div>
+            </div>
+            
+            <!-- Email correction option -->
+            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 mb-6 correct-email-section">
+                <div class="text-center">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                        Wrong email address?
+                    </p>
+                    <a href="{{ route('verification.correct-email') }}" class="correct-email-button inline-flex items-center gap-2 px-6 py-3 rounded-lg transition-all font-semibold">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Correct Email Address
+                    </a>
                 </div>
             </div>
             

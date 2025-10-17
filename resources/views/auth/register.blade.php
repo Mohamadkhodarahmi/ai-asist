@@ -242,6 +242,21 @@
                 </div>
             @endif
 
+            <!-- Success message for account deletion -->
+            @if (session('status') == 'account-deleted')
+                <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 rounded-xl">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <div>
+                            <span class="font-medium">{{ session('message') }}</span>
+                            <p class="text-sm mt-1">You can now register with a different email address.</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('register') }}" class="space-y-6" id="registerForm">
                 @csrf
                 

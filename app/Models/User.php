@@ -93,6 +93,38 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(UserActivityAnalytic::class);
     }
 
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(Referral::class, 'referrer_id');
+    }
+
+    public function referredBy(): HasMany
+    {
+        return $this->hasMany(Referral::class, 'referred_id');
+    }
+
+    public function getReferralCode(): string
+    {
+        return 'USER' . strtoupper(substr(md5($this->id . $this->email), 0, 8));
+    }
+
+    public function getReferralLink(): string
+    {
+        return route('register') . '?ref=' . $this->getReferralCode();
+    }
+
+    public function getTotalReferralRewards(): int
+    {
+        return $this->referrals()
+            ->where('status', 'completed')
+            ->sum('reward_amount_cents');
+    }
+
+    public function getTotalReferralRewardsFormatted(): string
+    {
+        return '$' . number_format($this->getTotalReferralRewards() / 100, 2);
+    }
+
     /**
      * Check if the user is an administrator.
      */

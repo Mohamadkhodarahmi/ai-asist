@@ -11,6 +11,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\PlanController;
 use App\Livewire\ChatInterface;
 use App\Livewire\FileUpload; // Import the Livewire component
+use App\Livewire\TelegramBotBuilder;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,47 +45,28 @@ Route::middleware('guest')->group(function () {
 });
 
 // --- Email Verification Routes ---
+use App\Http\Controllers\Auth\EmailVerificationController;
+
 // Email verification notice (requires auth)
 Route::middleware('auth')->group(function () {
-    Route::get('/email/verify', function () {
-        return view('auth.verify-email');
-    })->name('verification.notice');
+    Route::get('/email/verify', [EmailVerificationController::class, 'show'])->name('verification.notice');
 
     // Resend verification email (requires auth)
-    Route::post('/email/verification-notification', function (Illuminate\Http\Request $request) {
-        $request->user()->sendEmailVerificationNotification();
+    Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
+        ->middleware(['throttle:6,1'])->name('verification.send');
 
-        return back()->with('status', 'Verification link sent!');
-    })->middleware(['throttle:6,1'])->name('verification.send');
+    // Email correction routes
+    Route::get('/email/correct', [EmailVerificationController::class, 'showEmailCorrection'])->name('verification.correct-email');
+    Route::post('/email/update', [EmailVerificationController::class, 'updateEmail'])->name('verification.update-email');
+    
+    // Account deletion routes
+    Route::get('/email/delete-account', [EmailVerificationController::class, 'showDeleteAccount'])->name('verification.delete-account.show');
+    Route::post('/email/delete-account', [EmailVerificationController::class, 'deleteAccount'])->name('verification.delete-account');
 });
 
 // Email verification handler (NO auth required - user will be logged in after verification)
-Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
-    $user = \App\Models\User::find($id);
-    
-    // Check if user exists
-    if (!$user) {
-        return redirect()->route('login')->with('error', 'Verification link is invalid or expired. Please request a new verification email.');
-    }
-    
-    // Verify the hash matches the user's email
-    if (!hash_equals(sha1($user->email), $hash)) {
-        return redirect()->route('login')->with('error', 'Invalid verification link. Please request a new verification email.');
-    }
-    
-    // Check if user is already verified
-    if ($user->hasVerifiedEmail()) {
-        return redirect()->route('dashboard')->with('status', 'Email already verified!');
-    }
-    
-    // Mark email as verified
-    $user->markEmailAsVerified();
-    
-    // Log the user in
-    auth()->login($user);
-    
-    return redirect()->route('dashboard')->with('status', 'Email verified successfully!');
-})->middleware(['signed'])->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->middleware(['signed'])->name('verification.verify');
 
 // --- Authenticated User Routes ---
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -125,6 +107,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/business/telegram', [BusinessController::class, 'updateTelegram'])->name('business.telegram.update');
 
     Route::get('/upload', FileUpload::class)->name('upload');
+    
+    // Telegram Bot Builder
+    Route::get('/telegram-bot-builder', TelegramBotBuilder::class)->name('telegram-bot-builder');
+    Route::get('/telegram-bot-builder/{botId}', TelegramBotBuilder::class)->name('telegram-bot-builder.edit');
+    
+    // Telegram Bot Analytics
+    Route::get('/telegram-analytics', \App\Livewire\TelegramBotAnalytics::class)->name('telegram-analytics');
+    
+    // Team Management
+    Route::get('/team-management', \App\Livewire\TeamManagement::class)->name('team-management');
 
     // Groups routes
     Route::get('/groups', \App\Livewire\Groups\GroupList::class)->name('groups.index');

@@ -47,7 +47,7 @@ class AnalyticsDashboard extends Component
     {
         $planSlug = $user->plan?->slug;
 
-        return in_array($planSlug, ['pro', 'business']);
+        return in_array($planSlug, ['pro', 'business', 'enterprise']);
     }
 
     public function render()

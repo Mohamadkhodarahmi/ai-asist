@@ -40,6 +40,11 @@ class ApiRateLimitService
                 'requests_per_hour' => 5000,
                 'requests_per_day' => 50000,
             ],
+            'enterprise' => [
+                'requests_per_minute' => 300, // Unlimited for enterprise
+                'requests_per_hour' => 0, // 0 means unlimited
+                'requests_per_day' => 0, // 0 means unlimited
+            ],
             default => [
                 'requests_per_minute' => 0,
                 'requests_per_hour' => 0,
@@ -54,7 +59,7 @@ class ApiRateLimitService
     public function hasApiAccess(User $user): bool
     {
         $planSlug = $user->plan?->slug ?? 'free';
-        return in_array($planSlug, ['pro', 'business']);
+        return in_array($planSlug, ['pro', 'business', 'enterprise']);
     }
 
     /**
@@ -91,7 +96,7 @@ class ApiRateLimitService
         $hourStart = $now->copy()->startOfHour();
         $hourCount = $this->getRequestCount($user, $endpoint, $method, $hourStart, $now, $apiKey);
         
-        if ($hourCount >= $rateLimits['requests_per_hour']) {
+        if ($rateLimits['requests_per_hour'] > 0 && $hourCount >= $rateLimits['requests_per_hour']) {
             return [
                 'allowed' => false,
                 'reason' => 'Rate limit exceeded: too many requests per hour',
@@ -105,7 +110,7 @@ class ApiRateLimitService
         $dayStart = $now->copy()->startOfDay();
         $dayCount = $this->getRequestCount($user, $endpoint, $method, $dayStart, $now, $apiKey);
         
-        if ($dayCount >= $rateLimits['requests_per_day']) {
+        if ($rateLimits['requests_per_day'] > 0 && $dayCount >= $rateLimits['requests_per_day']) {
             return [
                 'allowed' => false,
                 'reason' => 'Rate limit exceeded: too many requests per day',

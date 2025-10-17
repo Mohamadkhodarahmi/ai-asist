@@ -19,20 +19,42 @@ class BusinessController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'document' => 'required|file|mimes:pdf,txt,docx|max:10240', // 10MB max
         ]);
 
         try {
+            // Create the business
             $business = Business::create([
                 'name' => $request->name,
-                'user_id' => $request->user()->id, // assuming a user relation
             ]);
 
-            return redirect()->route('chat')->with('status', 'Business created successfully!');
+            // Associate the business with the user
+            $user = $request->user();
+            $user->business_id = $business->id;
+            $user->save();
+
+            // Handle file upload
+            if ($request->hasFile('document')) {
+                $file = $request->file('document');
+                $path = $file->store('knowledge_files');
+
+                // Create knowledge file record
+                $business->knowledgeFiles()->create([
+                    'original_name' => $file->getClientOriginalName(),
+                    'storage_path' => $path,
+                    'status' => 'pending',
+                ]);
+
+                // Dispatch job to process the file
+                \App\Jobs\ProcessKnowledgeFile::dispatch($business->knowledgeFiles()->latest()->first());
+            }
+
+            return redirect()->route('chat')->with('status', 'Assistant created successfully!');
 
         } catch (Throwable $e) {
             Log::error('Failed to create business: '.$e->getMessage());
 
-            return back()->withErrors(['business' => 'Failed to create business.']);
+            return back()->withErrors(['business' => 'Failed to create assistant. Please try again.']);
         }
     }
 

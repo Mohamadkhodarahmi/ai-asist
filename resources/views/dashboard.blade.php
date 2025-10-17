@@ -37,6 +37,7 @@
                                         @elseif($user->plan->slug === 'starter') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
                                         @elseif($user->plan->slug === 'pro') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
                                         @elseif($user->plan->slug === 'business') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                        @elseif($user->plan->slug === 'enterprise') bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-800 dark:from-yellow-900 dark:to-orange-900 dark:text-yellow-200
                                         @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @endif">
                                         {{ ucfirst($user->plan->name) }}
                                     </span>
@@ -117,7 +118,7 @@
                     </div>
 
                     {{-- Export Data Card (Prominent Placement) --}}
-                    @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+                    @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business', 'enterprise']))
                         <a href="{{ route('export') }}" class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group cursor-pointer">
                             <div class="flex items-center justify-between">
                                 <div>
@@ -154,7 +155,7 @@
                     @endif
 
                     {{-- Analytics Card (Prominent Placement) --}}
-                    @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
+                    @if(in_array($user->plan?->slug ?? '', ['pro', 'business', 'enterprise']))
                         <a href="{{ route('analytics') }}" class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group cursor-pointer">
                             <div class="flex items-center justify-between">
                                 <div>
@@ -197,7 +198,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         
                         {{-- Personality Management Card --}}
-                        @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+                        @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business', 'enterprise']))
                             <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
                                 <div class="flex items-center gap-4 mb-4">
                                     <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -249,7 +250,7 @@
                         @endif
 
                         {{-- Export Conversations Card --}}
-                        @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+                        @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business', 'enterprise']))
                             <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
                                 <div class="flex items-center gap-4 mb-4">
                                     <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -301,7 +302,7 @@
                         @endif
 
                         {{-- Analytics Dashboard Card --}}
-                        @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
+                        @if(in_array($user->plan?->slug ?? '', ['pro', 'business', 'enterprise']))
                             <div class="bg-white/80 dark:bg-[#161615]/80 backdrop-blur-lg border border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
                                 <div class="flex items-center gap-4 mb-4">
                                     <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -502,7 +503,7 @@
                                 </a>
 
                                 {{-- Export Data Quick Action --}}
-                                @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+                                @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business', 'enterprise']))
                                     <a href="{{ route('export') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors group">
                                         <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -517,7 +518,7 @@
                                 @endif
 
                                 {{-- Analytics Quick Action --}}
-                                @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
+                                @if(in_array($user->plan?->slug ?? '', ['pro', 'business', 'enterprise']))
                                     <a href="{{ route('analytics') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors group">
                                         <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
