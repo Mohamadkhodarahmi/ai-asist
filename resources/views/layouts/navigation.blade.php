@@ -38,7 +38,7 @@
             </div>
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center gap-1">
+            <div class="hidden md:flex items-center gap-2">
                 <a href="{{ route('dashboard') }}" 
                    class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('dashboard') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('dashboard') ? 'page' : null }}">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@
                 </a>
 
                 {{-- Document Analytics Navigation Link --}}
-                @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+                @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business', 'enterprise']))
                     <a href="{{ route('documents.analytics') }}" 
                        class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('documents.analytics') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('documents.analytics') ? 'page' : null }}">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,7 +78,7 @@
                 @endif
 
                 {{-- Export Data Navigation Link --}}
-                @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+                @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business', 'enterprise']))
                     <a href="{{ route('export') }}" 
                        class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('export') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('export') ? 'page' : null }}">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +89,7 @@
                 @endif
 
                 {{-- Analytics Navigation Link --}}
-                @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
+                @if(in_array($user->plan?->slug ?? '', ['pro', 'business', 'enterprise']))
                     <a href="{{ route('analytics') }}" 
                        class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('analytics') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('analytics') ? 'page' : null }}">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +100,7 @@
                 @endif
 
                 {{-- API Keys Navigation Link --}}
-                @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
+                @if(in_array($user->plan?->slug ?? '', ['pro', 'business', 'enterprise']))
                     <a href="{{ route('api-keys.index') }}" 
                        class="inline-flex items-center px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('api-keys.*') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10 shadow-sm' : '' }}" aria-current="{{ request()->routeIs('api-keys.*') ? 'page' : null }}">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,6 +160,7 @@
                                         @elseif($user->plan->slug === 'starter') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
                                         @elseif($user->plan->slug === 'pro') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
                                         @elseif($user->plan->slug === 'business') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                        @elseif($user->plan->slug === 'enterprise') bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200
                                         @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @endif">
                                         {{ ucfirst($user->plan->name) }} Plan
                                     </span>
@@ -212,11 +213,11 @@
             <a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base text-[#1b1b18] dark:text-[#EDEDEC] hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('dashboard') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('dashboard') ? 'page' : null }}">Dashboard</a>
             <a href="{{ route('chat') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('chat') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('chat') ? 'page' : null }}">Chat</a>
             <a href="{{ route('groups.index') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('groups.*') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('groups.*') ? 'page' : null }}">Groups</a>
-            @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business']))
+            @if(in_array($user->plan?->slug ?? '', ['starter', 'pro', 'business', 'enterprise']))
                 <a href="{{ route('documents.analytics') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('documents.analytics') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('documents.analytics') ? 'page' : null }}">Documents</a>
                 <a href="{{ route('export') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('export') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('export') ? 'page' : null }}">Export</a>
             @endif
-            @if(in_array($user->plan?->slug ?? '', ['pro', 'business']))
+            @if(in_array($user->plan?->slug ?? '', ['pro', 'business', 'enterprise']))
                 <a href="{{ route('analytics') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('analytics') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('analytics') ? 'page' : null }}">Analytics</a>
                 <a href="{{ route('api-keys.index') }}" class="block px-4 py-3 rounded-lg font-medium transition-all duration-200 text-base hover:bg-[#F53003]/10 dark:hover:bg-[#FF4433]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F53003]/40 {{ request()->routeIs('api-keys.*') ? ' text-[#F53003] dark:text-[#FF4433] bg-[#F53003]/10 dark:bg-[#FF4433]/10' : ' text-[#706f6c] dark:text-[#A1A09A]' }}" aria-current="{{ request()->routeIs('api-keys.*') ? 'page' : null }}">API Keys</a>
             @endif

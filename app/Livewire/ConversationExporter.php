@@ -39,7 +39,7 @@ class ConversationExporter extends Component
 
         // Check if user has access to export feature (Starter+ plans)
         if (! $this->hasExportAccess($user)) {
-            abort(403, 'Conversation export is only available for Starter, Pro and Business plans.');
+            abort(403, 'Conversation export is only available for Starter, Pro, Business and Enterprise plans.');
         }
 
         // Load export stats

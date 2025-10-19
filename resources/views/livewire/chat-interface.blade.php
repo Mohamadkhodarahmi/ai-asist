@@ -47,20 +47,6 @@
                             <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 py-2 px-4 bg-[#f53003] text-white rounded-md hover:bg-[#c41e00] transition-colors font-semibold shadow">Send</button>
                         </form>
                         
-                        <hr class="my-8 border-[#e3e3e0]/50 dark:border-[#3E3E3A]/50">
-
-                        {{-- Telegram Integration --}}
-                        <div>
-                           <h2 class="text-xl font-bold">Connect Telegram Bot</h2>
-                           <p class="text-[#706f6c] dark:text-[#A1A09A] mb-4">Add your Telegram bot token to enable the assistant in your chat.</p>
-                           <form action="{{ route('business.telegram.update') }}" method="POST" class="flex items-center gap-4">
-                                @csrf
-                                <input type="text" name="telegram_token" placeholder="Enter your bot token here" class="flex-grow px-4 py-2 bg-gray-50 dark:bg-[#0a0a0a] border border-[#e3e3e0] dark:border-[#3E3E3A] rounded focus:outline-none focus:ring-2 focus:ring-[#f53003] transition-all" value="{{ $business->telegram_token ?? '' }}">
-                                <button type="submit" class="py-2 px-5 bg-[#1b1b18] text-white rounded hover:bg-black transition-colors font-semibold shadow dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white">
-                                    {{ $business->telegram_token ? 'Update' : 'Connect' }}
-                                </button>
-                            </form>
-                        </div>
 
                     @else
                         {{-- This section for creating a new assistant remains the same --}}

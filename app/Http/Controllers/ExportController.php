@@ -20,7 +20,7 @@ class ExportController extends Controller
 
         // Check if user has access to export feature (Starter+ plans)
         if (! $this->hasExportAccess($user)) {
-            abort(403, 'Conversation export is only available for Starter, Pro and Business plans.');
+            abort(403, 'Conversation export is only available for Starter, Pro, Business and Enterprise plans.');
         }
 
         $request->validate([
@@ -71,6 +71,6 @@ class ExportController extends Controller
     {
         $planSlug = $user->plan?->slug;
 
-        return in_array($planSlug, ['starter', 'pro', 'business']);
+        return in_array($planSlug, ['starter', 'pro', 'business', 'enterprise']);
     }
 }

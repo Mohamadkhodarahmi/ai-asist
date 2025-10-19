@@ -58,7 +58,7 @@ Route::middleware('auth')->group(function () {
     // Email correction routes
     Route::get('/email/correct', [EmailVerificationController::class, 'showEmailCorrection'])->name('verification.correct-email');
     Route::post('/email/update', [EmailVerificationController::class, 'updateEmail'])->name('verification.update-email');
-    
+
     // Account deletion routes
     Route::get('/email/delete-account', [EmailVerificationController::class, 'showDeleteAccount'])->name('verification.delete-account.show');
     Route::post('/email/delete-account', [EmailVerificationController::class, 'deleteAccount'])->name('verification.delete-account');
@@ -107,14 +107,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/business/telegram', [BusinessController::class, 'updateTelegram'])->name('business.telegram.update');
 
     Route::get('/upload', FileUpload::class)->name('upload');
-    
+
     // Telegram Bot Builder
     Route::get('/telegram-bot-builder', TelegramBotBuilder::class)->name('telegram-bot-builder');
     Route::get('/telegram-bot-builder/{botId}', TelegramBotBuilder::class)->name('telegram-bot-builder.edit');
-    
+
     // Telegram Bot Analytics
     Route::get('/telegram-analytics', \App\Livewire\TelegramBotAnalytics::class)->name('telegram-analytics');
-    
+
+    // Telegram Bot Settings
+    Route::get('/telegram-settings', \App\Livewire\TelegramSettings::class)->name('telegram-settings');
+
     // Team Management
     Route::get('/team-management', \App\Livewire\TeamManagement::class)->name('team-management');
 

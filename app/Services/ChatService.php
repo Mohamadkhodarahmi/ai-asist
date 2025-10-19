@@ -106,14 +106,14 @@ class ChatService
 
         \Log::info('ChatService: Calling LLM API', [
             'url' => $fullUrl,
-            'model' => 'gpt-5-nano',
+            'model' => 'gpt-4o-mini',
         ]);
 
         try {
             $response = Http::withToken($this->apiKey)
                 ->timeout(60)
                 ->post($fullUrl, [
-                    'model' => 'gpt-5-nano',
+                    'model' => 'gpt-4o-mini', // Changed from gpt-5-nano to gpt-4o-mini
                     'messages' => [['role' => 'user', 'content' => $prompt]],
                     'temperature' => 0.2,
                     'max_tokens' => 1000,
