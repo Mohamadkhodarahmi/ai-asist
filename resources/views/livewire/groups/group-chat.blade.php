@@ -423,6 +423,9 @@
                     </div>
                 </div>
 
+                {{-- Voice Channels Card --}}
+                @livewire('groups.voice-channel-manager', ['group' => $group])
+
                 {{-- Learning Materials Card --}}
                 <div class="bg-white dark:bg-[#161615] rounded-2xl shadow-lg p-5 border border-[#e3e3e0] dark:border-[#3E3E3A]">
                     <h3 class="font-bold text-[#1b1b18] dark:text-[#EDEDEC] mb-4 flex items-center gap-2">
@@ -597,6 +600,21 @@
                 .listen('.GroupMessageSent', (event) => {
                     console.log('📨 New message received (dot prefix):', event);
                     appendMessageToUI(event, currentUserId);
+                })
+                .listen('VoiceChannelJoined', (event) => {
+                    console.log('🔊 Voice channel joined:', event);
+                    // Trigger refresh of voice channel component
+                    Livewire.dispatch('$refresh');
+                })
+                .listen('VoiceChannelLeft', (event) => {
+                    console.log('🔇 Voice channel left:', event);
+                    // Trigger refresh of voice channel component
+                    Livewire.dispatch('$refresh');
+                })
+                .listen('VoiceChannelSpeaking', (event) => {
+                    console.log('🎤 Voice speaking:', event);
+                    // Trigger refresh of voice channel component
+                    Livewire.dispatch('$refresh');
                 })
                 .error((error) => {
                     console.error('❌ Echo subscription error:', error);

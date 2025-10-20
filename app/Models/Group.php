@@ -53,6 +53,11 @@ class Group extends Model
         return $this->hasMany(GroupMessage::class);
     }
 
+    public function voiceChannels(): HasMany
+    {
+        return $this->hasMany(VoiceChannel::class);
+    }
+
     public function knowledgeFiles(): BelongsToMany
     {
         return $this->belongsToMany(KnowledgeFile::class, 'group_files')
@@ -64,6 +69,7 @@ class Group extends Model
     {
         $code = strtoupper(substr(md5(uniqid()), 0, 8));
         $this->update(['invite_code' => $code]);
+
         return $code;
     }
 
@@ -93,7 +99,7 @@ class Group extends Model
             $this->members()->attach($user->id, [
                 'role' => $role,
                 'joined_at' => now(),
-                'permissions' => $this->getDefaultPermissions($role),
+                'permissions' => json_encode($this->getDefaultPermissions($role)),
             ]);
         }
     }
@@ -107,7 +113,7 @@ class Group extends Model
     {
         $this->members()->updateExistingPivot($user->id, [
             'role' => $role,
-            'permissions' => $this->getDefaultPermissions($role),
+            'permissions' => json_encode($this->getDefaultPermissions($role)),
         ]);
     }
 
@@ -124,12 +130,13 @@ class Group extends Model
     public function userHasPermission(User $user, string $permission): bool
     {
         $member = $this->members()->where('user_id', $user->id)->first();
-        
-        if (!$member) {
+
+        if (! $member) {
             return false;
         }
 
         $permissions = $member->pivot->permissions ?? [];
+
         return in_array($permission, $permissions);
     }
 

@@ -13,3 +13,16 @@ Broadcast::channel('group.{groupId}', function ($user, $groupId) {
         ->where('user_id', $user->id)
         ->exists();
 });
+
+Broadcast::channel('voice-channel.{voiceChannelId}', function ($user, $voiceChannelId) {
+    // Check if user is a member of the group that owns this voice channel
+    $voiceChannel = \App\Models\VoiceChannel::find($voiceChannelId);
+    if (! $voiceChannel) {
+        return false;
+    }
+
+    return $voiceChannel->group
+        ?->members()
+        ->where('user_id', $user->id)
+        ->exists();
+});

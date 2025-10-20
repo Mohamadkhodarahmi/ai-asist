@@ -124,6 +124,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Groups routes
     Route::get('/groups', \App\Livewire\Groups\GroupList::class)->name('groups.index');
     Route::get('/groups/{group}', \App\Livewire\Groups\GroupChat::class)->name('groups.chat');
+
+    // Voice Channel routes
+    Route::post('/groups/{group}/voice-channels', [\App\Http\Controllers\VoiceChannelController::class, 'store'])->name('groups.voice-channels.store');
+    Route::post('/groups/{group}/voice-channels/{voiceChannel}/join', [\App\Http\Controllers\VoiceChannelController::class, 'join'])->name('groups.voice-channels.join');
+    Route::delete('/groups/{group}/voice-channels/{voiceChannel}/leave', [\App\Http\Controllers\VoiceChannelController::class, 'leave'])->name('groups.voice-channels.leave');
+    Route::delete('/groups/{group}/voice-channels/{voiceChannel}', [\App\Http\Controllers\VoiceChannelController::class, 'destroy'])->name('groups.voice-channels.destroy');
+    Route::post('/groups/{group}/voice-channels/{voiceChannel}/speaking', [\App\Http\Controllers\VoiceChannelController::class, 'updateSpeaking'])->name('groups.voice-channels.speaking');
+    Route::post('/groups/{group}/voice-channels/{voiceChannel}/signaling', [\App\Http\Controllers\VoiceChannelController::class, 'handleSignaling'])->name('groups.voice-channels.signaling');
 });
 
 // --- Admin Routes ---
